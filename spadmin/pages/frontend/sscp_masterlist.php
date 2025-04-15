@@ -1,0 +1,155 @@
+<?php
+$page = "sscp_masterlist";
+include 'template/header.php';
+?>
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1>GIA Masterlist</h1>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="#">Home</a></li>
+                        <li class="breadcrumb-item active">GIA Masterlist</li>
+                    </ol>
+                </div>
+            </div>
+        </div><!-- /.container-fluid -->
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Masterlist of GIA Projects</h3>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body">
+                            <table id="example1" class="table table-bordered table-striped table-responsive">
+                                <thead>
+                                    <tr>
+                                        <th>Tags</th>
+                                        <th>Project Code</th>
+                                        <th>Program Type</th>
+                                        <th>Year Approved</th>
+                                        <th>Project Title</th>
+                                        <th>Beneficiaries</th>
+                                        <th>Implementor</th>
+                                        <th>Status</th>
+                                        <th>Project Cost</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php
+                                    include '../../../cms/connection/connection.php';
+
+                                    // SQL query to retrieve data
+                                    $sql = "select project_id,tag, project_code, short, year_approved, project_title, coop_name, implementor_name, prj_status_name, project_cost
+                      from projects p
+                      left join psi_project_types t on p.project_type = t.prj_type_id
+                      left join psi_cooperators c on p.beneficiaries = c.coop_id
+                      left join psi_implementors i on p.implementor = i.implementor_id
+                      left join psi_project_status s on p.status = s.prj_status_id where project_type = 4
+                      order by p.date_encoded desc";
+
+                                    // Execute the query
+                                    $result = $conn->query($sql);
+
+                                    if ($result->num_rows > 0) {
+                                        while ($row = $result->fetch_assoc()) {
+                                            switch ($row["prj_status_name"]) {
+                                                case "New":
+                                                    $badge = "primary";
+                                                    break;
+                                                case "On-going":
+                                                    $badge = "warning";
+                                                    break;
+                                                case "Graduated":
+                                                    $badge = "success";
+                                                    break;
+                                                case "Deferred":
+                                                    $badge = "secondary";
+                                                    break;
+                                                case "Terminated":
+                                                    $badge = "danger";
+                                                    break;
+                                                case "Withdrawn":
+                                                    $badge = "info";
+                                                    break;
+                                                default:
+                                                    break;
+                                            }
+                                            echo "<tr>";
+                                            echo "<td>" . $row["tag"] . "</td>";
+                                            echo "<td>" . $row["project_code"] . "</td>";
+                                            echo "<td>" . $row["short"] . "</td>";
+                                            echo "<td>" . $row["year_approved"] . "</td>";
+                                            echo "<td>" . $row["project_title"] . "</td>";
+                                            echo "<td>" . $row["coop_name"] . "</td>";
+                                            echo "<td>" . $row["implementor_name"] . "</td>";
+                                            echo "<td class='project-state'><span class='badge badge-$badge'>" . $row["prj_status_name"] . "</span></td>";
+                                            echo "<td>PhP " . number_format($row["project_cost"], 2) . "</td>";
+                                            echo '
+                              <td style="text-align: center;">
+                                <div class="btn-group" role="group" aria-label="Basic example">
+                                  <a href="view_project.php?id=' . $row["project_id"] . '" type="button" class="btn btn-primary btn-sm" title="view details">
+                                    <i class="fas fa-eye"></i>
+                                  </a>
+                                  '; ?><a href="#" type="button" class="btn btn-danger btn-sm" title="delete project" onclick="deleteProject('<?= $row['project_id'] ?>')">
+                                                <i class="fas fa-trash-alt"></i>
+                                            </a><?php echo '
+                                </div>
+                              </td>';
+                                                echo "</tr>";
+                                            }
+                                        }
+
+                                        // Close connection
+                                        $conn->close();
+
+                                                ?>
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+                    <!-- /.card -->
+                </div>
+                <!-- /.col -->
+            </div>
+            <!-- /.row -->
+        </div>
+        <!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+</div>
+<!-- /.content-wrapper -->
+<script>
+    function deleteProject(projectId) {
+        Swal.fire({
+            title: 'Are you sure you want to delete this project?',
+            text: "This action cannot be undone!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Confirm'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Send AJAX request or redirect to delete_project.php with projectId
+                window.location.href = "../backend/delete_project.php?id=" + projectId;
+            }
+        });
+    }
+</script>
+<?php
+include 'template/footer.php';
+?>

