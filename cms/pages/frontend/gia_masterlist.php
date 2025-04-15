@@ -4,6 +4,101 @@ include 'template/header.php';
 ?>
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
+    <!-- Add this right after content-wrapper div opens -->
+    <style>
+        @media print {
+            @page {
+                size: landscape;
+                margin: 1cm;
+            }
+            
+            body * {
+                visibility: hidden;
+            }
+            
+            .print-section, .print-section * {
+                visibility: visible;
+            }
+            
+            .print-section {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+            }
+            
+            .no-print {
+                display: none !important;
+            }
+            
+            table {
+                width: 100% !important;
+                font-size: 11px !important;
+            }
+            
+            th, td {
+                padding: 5px !important;
+                border: 1px solid black !important;
+            }
+            
+            .print-header {
+                text-align: center;
+                margin-bottom: 20px;
+            }
+            
+            /* Remove grey background */
+            .card, 
+            .card-body, 
+            .content-wrapper,
+            .table-bordered,
+            .table-hover,
+            table,
+            tbody tr,
+            thead tr {
+                background-color: white !important;
+                background: white !important;
+            }
+            
+            /* Ensure table cells are white */
+            table th,
+            table td {
+                background-color: white !important;
+                background: white !important;
+            }
+            
+            /* Remove any hover effects */
+            tr:hover {
+                background-color: white !important;
+                background: white !important;
+            }
+            
+            /* Ensure text is black on white */
+            * {
+                color: black !important;
+                background-color: white !important;
+            }
+            
+            /* Remove any shadows */
+            .card {
+                box-shadow: none !important;
+        }
+    </style>
+
+    <!-- Add this right before the card div -->
+    <div class="print-section" style="display: none;">
+        <div class="print-header">
+            <img src="../../dist/img/dost_logo.png" alt="DOST Logo" style="height: 80px;">
+            <h4 style="margin: 10px 0;">Republic of the Philippines</h4>
+            <h4>DEPARTMENT OF SCIENCE AND TECHNOLOGY</h4>
+            <h4>MIMAROPA Region</h4>
+            <h3>GIA Projects Masterlist</h3>
+            <hr>
+        </div>
+        
+        <!-- Table will be cloned here during print -->
+        <div id="print-table-container"></div>
+    </div>
+
     <!-- Content Header (Page header) -->
     <section class="content-header">
         <div class="container-fluid">
@@ -29,6 +124,14 @@ include 'template/header.php';
                     <div class="card">
                         <div class="card-header">
                             <h3 class="card-title">Masterlist of GIA Projects</h3>
+                            <div class="float-right">
+                                <button class="btn btn-success mr-2" onclick="exportToExcel()">
+                                    <i class="fas fa-file-excel"></i> Export to Excel
+                                </button>
+                                <button class="btn btn-primary" onclick="printReport()">
+                                    <i class="fas fa-print"></i> Print Report
+                                </button>
+                            </div>
                         </div>
                         <!-- /.card-header -->
                         <div class="card-body">
@@ -204,6 +307,94 @@ include 'template/header.php';
         });
         
     }
+
+    function printReport() {
+        // Clone the table and prepare it for printing
+        const originalTable = document.getElementById('example2');
+        const printSection = document.querySelector('.print-section');
+        const printTableContainer = document.getElementById('print-table-container');
+        
+        // Clear previous content
+        printTableContainer.innerHTML = '';
+        
+        // Clone the table
+        const tableClone = originalTable.cloneNode(true);
+        
+        // Remove the action column
+        const headers = tableClone.querySelectorAll('th');
+        const lastHeader = headers[headers.length - 1];
+        if (lastHeader.textContent.trim().toLowerCase() === 'action') {
+            lastHeader.remove();
+        }
+        
+        const rows = tableClone.querySelectorAll('tr');
+        rows.forEach(row => {
+            const cells = row.querySelectorAll('td');
+            if (cells.length > 0) {
+                const lastCell = cells[cells.length - 1];
+                if (lastCell.querySelector('.btn-group')) {
+                    lastCell.remove();
+                }
+            }
+        });
+        
+        // Add the modified table to the print section
+        printTableContainer.appendChild(tableClone);
+        
+        // Show print section
+        printSection.style.display = 'block';
+        
+        // Print
+        window.print();
+        
+        // Hide print section after printing
+        setTimeout(() => {
+            printSection.style.display = 'none';
+        }, 1000);
+    }
+
+    function exportToExcel() {
+        // Create a form to submit the POST request
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '../backend/export_gia_excel.php';
+        
+        // Get the table data
+        const table = document.getElementById('example2');
+        const tableHTML = table.outerHTML;
+        
+        // Create a hidden input field with the table data
+        const hiddenInput = document.createElement('input');
+        hiddenInput.type = 'hidden';
+        hiddenInput.name = 'table_data';
+        hiddenInput.value = tableHTML;
+        
+        // Append the input to the form
+        form.appendChild(hiddenInput);
+        
+        // Append the form to the body and submit it
+        document.body.appendChild(form);
+        form.submit();
+        
+        // Remove the form from the document
+        document.body.removeChild(form);
+    }
+
+    // Add class to elements that shouldn't be printed
+    document.addEventListener('DOMContentLoaded', function() {
+        const noPrintElements = [
+            '.main-header',
+            '.main-sidebar',
+            '.content-header',
+            '.btn-group'
+        ];
+        
+        noPrintElements.forEach(selector => {
+            document.querySelectorAll(selector).forEach(el => {
+                el.classList.add('no-print');
+            });
+        });
+    });
 </script>
 <?php
 include 'template/footer.php';
