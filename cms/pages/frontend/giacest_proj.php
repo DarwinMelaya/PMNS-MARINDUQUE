@@ -197,66 +197,134 @@ include 'template/header.php';
                         </div>
                     </div>
                     <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-3">
-                                <div class="form-group">
-                                    <label>Personal Services <span style="color:red">*</span></label>
-                                    <input type="number" id="ps" name="ps" max="99999999" step="0.01" min="0" class="form-control" placeholder="0.00" required>
+                        <!-- Expense Items Section -->
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <div class="card card-outline card-primary">
+                                    <div class="card-header">
+                                        <h5 class="m-0"><i class="fas fa-money-bill mr-2"></i>Expense Items</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div id="expense-items">
+                                            <div class="row mb-2 align-items-center">
+                                                <div class="col-md-4">
+                                                    <label class="mb-0">Type</label>
+                                                    <select class="form-control expense-type" name="expense_type[]">
+                                                        <option value="">Select Type</option>
+                                                        <option value="ps">Personal Services (PS)</option>
+                                                        <option value="mooe">Maintenance and Other Operating Expenses (MOOE)</option>
+                                                        <option value="eo">Equipment Outlay (EO)</option>
+                                                        <option value="cpf">Counterpart Funding (CPF)</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label class="mb-0">Amount (₱)</label>
+                                                    <input type="number" class="form-control expense-amount" name="expense_amount[]" 
+                                                           placeholder="Enter amount" step="0.01" min="0" onchange="calculateExpenseTotals()">
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <label class="mb-0">&nbsp;</label>
+                                                    <button type="button" class="btn btn-success btn-block" onclick="addExpenseItem()">
+                                                        <i class="fas fa-plus"></i> Add Item
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="col-md-3">
-                                <div class="form-group">
-                                    <label>Maintenance and Other Expenses <span style="color:red">*</span></label>
-                                    <input type="number" id="moe" name="moe" max="99999999" step="0.01" min="0" class="form-control" placeholder="0.00" required>
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="form-group">
-                                    <label>Equipment Outlay <span style="color:red">*</span></label>
-                                    <input type="number" id="eo" name="eo" max="99999999" step="0.01" min="0" class="form-control" placeholder="0.00" required>
-                                </div>
-                            </div>
+                        </div>
 
-                            <div class="col-md-3">
+                        <!-- Equipment Outlay Details -->
+                        <div class="row">
+                            <div class="col-12">
                                 <div class="form-group">
-                                    <label>Counterpart Funding <span style="color:red">*</span></label>
-                                    <input type="number" id="cpf" max="99999999" step="0.01" min="0" name="cpf" class="form-control" placeholder="0.00" required>
+                                    <label>Equipment Outlay Details</label>
+                                    <textarea name="eo_details" id="eo_details" class="form-control" 
+                                              placeholder="Enter Equipment Outlay Details"></textarea>
                                 </div>
                             </div>
                         </div>
+
+                        <!-- Counterpart Description -->
                         <div class="row">
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <label for="">Equipment Outlay Details</label>
-                                    <textarea name="eo_details" id="eo_details" class="form-control" placeholder="Enter Equipment Outlay Details"></textarea>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-12">
+                            <div class="col-12">
                                 <div class="form-group">
                                     <label>Counterpart Description <span style="color:red">*</span></label>
-                                    <textarea name="counterdesc" id="counterdesc" rows="3" class="form-control" placeholder="Enter counterpart Description" required></textarea>
+                                    <textarea name="counterdesc" id="counterdesc" rows="3" class="form-control" 
+                                              placeholder="Enter counterpart Description" required></textarea>
                                 </div>
                             </div>
                         </div>
-                        <div class="row">
 
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>Mode of Procurement <span style="color:red">*</span></label>
-                                    <select name="modepro" id="modepro" class="form-control" required>
-                                        <option value="">Select mode</option>
-                                        <option value="1">Direct Release</option>
-                                        <option value="2">Regional Office Procurement</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>Date Fund Released <span style="color:red">*</span></label>
-                                    <input type="date" name="date_released" class="form-control" required>
+                        <!-- Totals Section -->
+                        <div class="row mt-4">
+                            <div class="col-12">
+                                <div class="card card-outline card-info">
+                                    <div class="card-header">
+                                        <h5 class="m-0"><i class="fas fa-calculator mr-2"></i>Summary</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label>Total PS</label>
+                                                    <div class="input-group">
+                                                        <div class="input-group-prepend">
+                                                            <span class="input-group-text">₱</span>
+                                                        </div>
+                                                        <input type="number" id="total_ps" name="ps" class="form-control text-right" readonly>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label>Total MOOE</label>
+                                                    <div class="input-group">
+                                                        <div class="input-group-prepend">
+                                                            <span class="input-group-text">₱</span>
+                                                        </div>
+                                                        <input type="number" id="total_mooe" name="moe" class="form-control text-right" readonly>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label>Total EO</label>
+                                                    <div class="input-group">
+                                                        <div class="input-group-prepend">
+                                                            <span class="input-group-text">₱</span>
+                                                        </div>
+                                                        <input type="number" id="total_eo" name="eo" class="form-control text-right" readonly>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label>Total CPF</label>
+                                                    <div class="input-group">
+                                                        <div class="input-group-prepend">
+                                                            <span class="input-group-text">₱</span>
+                                                        </div>
+                                                        <input type="number" id="total_cpf" name="cpf" class="form-control text-right" readonly>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row mt-3">
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <label><strong>Overall Project Cost</strong></label>
+                                                    <div class="input-group">
+                                                        <div class="input-group-prepend">
+                                                            <span class="input-group-text">₱</span>
+                                                        </div>
+                                                        <input type="number" id="total_project_cost" class="form-control text-right font-weight-bold" readonly>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -345,6 +413,71 @@ include 'template/header.php';
                 }
             });
         }
+    }
+
+    function addExpenseItem() {
+        const newItem = `
+            <div class="row mb-2 align-items-center expense-row">
+                <div class="col-md-4">
+                    <select class="form-control expense-type" name="expense_type[]">
+                        <option value="">Select Type</option>
+                        <option value="ps">Personal Services (PS)</option>
+                        <option value="mooe">Maintenance and Other Operating Expenses (MOOE)</option>
+                        <option value="eo">Equipment Outlay (EO)</option>
+                        <option value="cpf">Counterpart Funding (CPF)</option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <input type="number" class="form-control expense-amount" name="expense_amount[]" 
+                           placeholder="Enter amount" step="0.01" min="0" onchange="calculateExpenseTotals()">
+                </div>
+                <div class="col-md-2">
+                    <button type="button" class="btn btn-danger btn-block" onclick="removeExpenseItem(this)">
+                        <i class="fas fa-minus"></i> Remove
+                    </button>
+                </div>
+            </div>
+        `;
+        document.getElementById('expense-items').insertAdjacentHTML('beforeend', newItem);
+    }
+
+    function removeExpenseItem(button) {
+        button.closest('.expense-row').remove();
+        calculateExpenseTotals();
+    }
+
+    function calculateExpenseTotals() {
+        let totalPS = 0;
+        let totalMOOE = 0;
+        let totalEO = 0;
+        let totalCPF = 0;
+
+        const rows = document.querySelectorAll('#expense-items .row');
+        rows.forEach(row => {
+            const type = row.querySelector('.expense-type').value;
+            const amount = parseFloat(row.querySelector('.expense-amount').value) || 0;
+
+            switch(type) {
+                case 'ps':
+                    totalPS += amount;
+                    break;
+                case 'mooe':
+                    totalMOOE += amount;
+                    break;
+                case 'eo':
+                    totalEO += amount;
+                    break;
+                case 'cpf':
+                    totalCPF += amount;
+                    break;
+            }
+        });
+
+        document.getElementById('total_ps').value = totalPS;
+        document.getElementById('total_mooe').value = totalMOOE;
+        document.getElementById('total_eo').value = totalEO;
+        document.getElementById('total_cpf').value = totalCPF;
+        document.getElementById('total_project_cost').value = totalPS + totalMOOE + totalEO + totalCPF;
     }
 </script>
 <!-- /.content-wrapper -->
