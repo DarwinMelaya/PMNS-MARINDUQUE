@@ -140,7 +140,7 @@ $conn->close();
           <div class="container">
             <div class="card-body">
               <div class="track">
-                <div class="step active"> <span class="icon"> <i class="fa fa-folder"></i> </span> <span class="text">Project Initiation</span> </div>
+                <div class="step active"> <span class="icon"> <i class="fa fa-folder"></i> </span> <span class="text">Project Initial Stage</span> </div>
                 <div class="step <?php if ($pidocs == '24') {
                                     echo 'active';
                                   } ?>"> <span class="icon"> <i class="fa fa-thumbs-up"></i> </span> <span class="text"> Project Implementation</span> </div>
