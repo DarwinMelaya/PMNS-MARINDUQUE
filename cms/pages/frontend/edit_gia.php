@@ -94,6 +94,21 @@ include 'template/header.php';
                             </div>
                         </div>
                         <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label>Sector <span style="color:red">*</span></label>
+                                    <select class="form-control select2" name="sector" data-placeholder="Select Sector" style="width: 100%;" required>
+                                        <option value="digitalization" <?php if ($row['sector'] == 'digitalization') { echo 'Selected'; }; ?>>Digitalization</option>
+                                        <option value="smart_communities" <?php if ($row['sector'] == 'smart_communities') { echo 'Selected'; }; ?>>Smart Communities</option>
+                                        <option value="blue_economy" <?php if ($row['sector'] == 'blue_economy') { echo 'Selected'; }; ?>>Blue Economy</option>
+                                        <option value="drrm" <?php if ($row['sector'] == 'drrm') { echo 'Selected'; }; ?>>DRRM</option>
+                                        <option value="cca" <?php if ($row['sector'] == 'cca') { echo 'Selected'; }; ?>>CCA/Environmental Management</option>
+                                        <option value="water_tech" <?php if ($row['sector'] == 'water_tech') { echo 'Selected'; }; ?>>Water Technologies</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label>Province <span style="color:red">*</span></label>
@@ -252,7 +267,7 @@ include 'template/header.php';
                             <div class="col-md-12">
                                 <div class="form-group">
                                     <label>Equipment Outlay Details <span style="color:red">*</span></label>
-                                    <textarea name="eo_details" id="eo_details" rows="3" class="form-control" placeholder="Enter Equipment Outlay Details" required></textarea>
+                                    <textarea name="eo_details" id="eo_details" rows="3" class="form-control" placeholder="Enter Equipment Outlay Details" required><?php echo isset($row['eo_details']) ? stripslashes($row['eo_details']) : ''; ?></textarea>
                                 </div>
                             </div>
                         </div>

@@ -31,13 +31,15 @@ $proponent = $_POST['proponent'];
 $collab = $_POST['collab'];
 $investment_map = $_POST['investment_map'];
 $counterpart_fund = $_POST['cpf'];
-$date_fund_rel = $_POST['date_released']; // Changed to 'date_released'
+$date_fund_rel = $_POST['date_released'];
 $personal_service = $_POST['ps'];
 $maintenance_other = $_POST['moe'];
 $equip_outlay = $_POST['eo'];
+$eo_details = $_POST['eo_details'];
 $modepro = $_POST['modepro'];
 $counterdesc = $_POST['counterdesc'];
 $project_id = $_POST['project_id'];
+$sector = $_POST['sector'];
 
 $beneficiaries = mysqli_real_escape_string($conn, $_POST['beneficiaries']);
 $type_bene = mysqli_real_escape_string($conn, $_POST['type_bene']);
@@ -45,7 +47,7 @@ $no_of_household = mysqli_real_escape_string($conn, $_POST['no_of_household']);
 $no_of_individual = mysqli_real_escape_string($conn, $_POST['no_of_individual']);
 $beneficiary_remarks = mysqli_real_escape_string($conn, $_POST['beneficiary_remarks']);
 
-// Sanitize input data (important for security)
+// Sanitize input data
 $project_email = mysqli_real_escape_string($conn, $project_email);
 $project_code = mysqli_real_escape_string($conn, $project_code);
 $project_title = mysqli_real_escape_string($conn, $project_title);
@@ -61,56 +63,88 @@ $collab = mysqli_real_escape_string($conn, $collab);
 $investment_map = mysqli_real_escape_string($conn, $investment_map);
 $counterdesc = mysqli_real_escape_string($conn, $counterdesc);
 $date_fund_rel = mysqli_real_escape_string($conn, $date_fund_rel);
-
-
-// Prepare SQL query to update data in the database
-$sql = "UPDATE projects SET 
-            proj_email=?, project_code=?, project_type=?, investment_map=?, project_title=?, project_desc=?, duration_from=?, 
-            duration_to=?, collaborating_agencies=?, proponent=?, street=?,
-            province=?, city_mun=?, barangay=?, date_approved=?, counterpart_fund=?, personal_service=?,
-            maintenance_other=?, equip_outlay=?, modepro=?, counterpart_desc=?, date_released=?, beneficiaries=?, type_of_beneficiaries=?, no_household=?, no_individual=?, beneficiary_remarks =?,
-            date_updated=? WHERE project_id=?";
+$eo_details = mysqli_real_escape_string($conn, $eo_details);
 
 $date_updated = date("Y-m-d H:i:s");
-// Prepare and bind parameters
+
+// Add this near the top of the file after getting POST data
+echo "Equipment Outlay Details: " . $_POST['eo_details']; // For debugging
+
+// Updated SQL query with correct number of parameters
+$sql = "UPDATE projects SET 
+        proj_email=?,
+        project_code=?,
+        project_type=?,
+        investment_map=?,
+        sector=?,
+        project_title=?,
+        project_desc=?,
+        duration_from=?,
+        duration_to=?,
+        collaborating_agencies=?,
+        proponent=?,
+        street=?,
+        province=?,
+        city_mun=?,
+        barangay=?,
+        date_approved=?,
+        counterpart_fund=?,
+        personal_service=?,
+        maintenance_other=?,
+        equip_outlay=?,
+        eo_details=?,
+        modepro=?,
+        counterpart_desc=?,
+        date_released=?,
+        beneficiaries=?,
+        type_of_beneficiaries=?,
+        no_household=?,
+        no_individual=?,
+        beneficiary_remarks=?,
+        date_updated=?
+        WHERE project_id=?";
+
+// Prepare and bind parameters - updated with correct number of types
 $stmt = $conn->prepare($sql);
 $stmt->bind_param(
-    "ssissssssssssssddddissssiissi",
-    $project_email, //s
-    $project_code, //s
-    $project_type, //i
-    $investment_map, //s
-    $project_title, //s
-    $prog_desc, //s
-    $duration_from, //s
-    $duration_to, //s
-    $collab, //s
-    $proponent, //s
-    $street, //s
-    $province, //s
-    $city_mun, //s
-    $barangay, //s
-    $date_approved, //s
-    $counterpart_fund, //d
-    $personal_service, //d
-    $maintenance_other, //d
-    $equip_outlay, //d
-    $modepro, //i
-    $counterdesc, //s
-    $date_fund_rel, //s
+    "ssissssssssssssddddssssssiiissi",
+    $project_email,
+    $project_code,
+    $project_type,
+    $investment_map,
+    $sector,
+    $project_title,
+    $prog_desc,
+    $duration_from,
+    $duration_to,
+    $collab,
+    $proponent,
+    $street,
+    $province,
+    $city_mun,
+    $barangay,
+    $date_approved,
+    $counterpart_fund,
+    $personal_service,
+    $maintenance_other,
+    $equip_outlay,
+    $eo_details,
+    $modepro,
+    $counterdesc,
+    $date_fund_rel,
     $beneficiaries,
     $type_bene,
     $no_of_household,
     $no_of_individual,
     $beneficiary_remarks,
-    $date_updated, //s
-    $project_id //i
+    $date_updated,
+    $project_id
 );
 
 // Execute statement
 if ($stmt->execute()) {
     header("Location: ../frontend/edit_gia.php?id=".$project_id."&s=1");
-    exit(); // Stop further execution
+    exit();
 } else {
     echo "Error updating record: " . $conn->error;
 }
