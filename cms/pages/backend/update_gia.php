@@ -107,38 +107,38 @@ $sql = "UPDATE projects SET
 // Prepare and bind parameters - updated with correct number of types
 $stmt = $conn->prepare($sql);
 $stmt->bind_param(
-    "ssissssssssssssddddssssssiiissi",
-    $project_email,
-    $project_code,
-    $project_type,
-    $investment_map,
-    $sector,
-    $project_title,
-    $prog_desc,
-    $duration_from,
-    $duration_to,
-    $collab,
-    $proponent,
-    $street,
-    $province,
-    $city_mun,
-    $barangay,
-    $date_approved,
-    $counterpart_fund,
-    $personal_service,
-    $maintenance_other,
-    $equip_outlay,
-    $eo_details,
-    $modepro,
-    $counterdesc,
-    $date_fund_rel,
-    $beneficiaries,
-    $type_bene,
-    $no_of_household,
-    $no_of_individual,
-    $beneficiary_remarks,
-    $date_updated,
-    $project_id
+    "ssisssssssssssssddddssssssiissi",  // Exactly 31 type definitions
+    $project_email,      // s
+    $project_code,       // s
+    $project_type,       // i
+    $investment_map,     // s
+    $sector,            // s
+    $project_title,      // s
+    $prog_desc,         // s
+    $duration_from,      // s
+    $duration_to,        // s
+    $collab,            // s
+    $proponent,         // s
+    $street,            // s
+    $province,          // s
+    $city_mun,          // s
+    $barangay,          // s
+    $date_approved,     // s
+    $counterpart_fund,  // d
+    $personal_service,  // d
+    $maintenance_other, // d
+    $equip_outlay,     // d
+    $eo_details,       // s
+    $modepro,          // s
+    $counterdesc,      // s
+    $date_fund_rel,    // s
+    $beneficiaries,    // s
+    $type_bene,        // s
+    $no_of_household,  // i
+    $no_of_individual, // i
+    $beneficiary_remarks, // s
+    $date_updated,     // s
+    $project_id        // i
 );
 
 // Execute statement
