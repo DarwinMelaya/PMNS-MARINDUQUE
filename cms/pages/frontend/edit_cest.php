@@ -45,7 +45,7 @@ include 'template/header.php';
             $conn->close();
             ?>
 
-            <form action="../backend/update_cest.php" method="post">
+            <form id="updateProjectForm" action="../backend/update_cest.php" method="post">
                 <input type="hidden" name="project_id" value="<?php echo $project_id; ?>">
                 <div class="card card-success">
                     <div class="card-header">
@@ -192,7 +192,14 @@ include 'template/header.php';
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label>Proponent <span style="color:red">*</span></label>
-                                    <input type="text" name="proponent" class="form-control" placeholder="Enter Proponent" value="<?php echo $row['proponent']; ?>" required>
+                                    <div id="proponent-container">
+                                        <div class="input-group mb-2">
+                                            <input type="text" class="form-control proponent-input" name="proponent[]" placeholder="Enter Proponent" value="" required>
+                                            <div class="input-group-append">
+                                                <button type="button" class="btn btn-success add-proponent"><i class="fas fa-plus"></i></button>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <div class="col-md-4">
@@ -362,6 +369,7 @@ include 'template/header.php';
 
 <script type="text/javascript" src="functionality/proj_script.js"></script>
 <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     function showCityMun(province_c) {
         if (province_c == "000") {
@@ -421,6 +429,99 @@ $(document).ready(function() {
         `;
         $('#collab-container').append(field);
     }
+});
+</script>
+<script>
+// Initialize with existing proponents
+$(document).ready(function() {
+    const existingProponents = <?php echo json_encode(explode(';', $row['proponent'])); ?>;
+    
+    if (existingProponents && existingProponents[0]) {
+        // Clear the default empty input
+        $('#proponent-container').empty();
+        
+        // Add each existing proponent
+        existingProponents.forEach((proponent, index) => {
+            addProponentField(proponent.trim());
+        });
+    }
+    
+    // Add new proponent field
+    $('.add-proponent').on('click', function() {
+        addProponentField();
+    });
+    
+    // Remove proponent field
+    $(document).on('click', '.remove-proponent', function() {
+        if ($('#proponent-container .input-group').length > 1) { // Ensure at least one proponent remains
+            $(this).closest('.input-group').remove();
+        }
+    });
+    
+    function addProponentField(value = '') {
+        const field = `
+            <div class="input-group mb-2">
+                <input type="text" class="form-control proponent-input" name="proponent[]" placeholder="Enter Proponent" value="${value}" required>
+                <div class="input-group-append">
+                    ${$('#proponent-container .input-group').length === 0 
+                        ? '<button type="button" class="btn btn-success add-proponent"><i class="fas fa-plus"></i></button>'
+                        : '<button type="button" class="btn btn-danger remove-proponent"><i class="fas fa-minus"></i></button>'}
+                </div>
+            </div>
+        `;
+        $('#proponent-container').append(field);
+    }
+});
+</script>
+<script>
+$(document).ready(function() {
+    // Handle form submission
+    $('#updateProjectForm').on('submit', function(e) {
+        e.preventDefault(); // Prevent default form submission
+        
+        // Get form data
+        const formData = new FormData(this);
+        
+        // Submit form via AJAX
+        $.ajax({
+            url: $(this).attr('action'),
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                if (response.status === 'success') {
+                    // Show success alert
+                    Swal.fire({
+                        title: 'Success!',
+                        text: 'Project has been updated successfully',
+                        icon: 'success',
+                        confirmButtonText: 'OK'
+                    }).then((result) => {
+                        // Redirect back to the same page to show updated data
+                        window.location.href = `edit_cest.php?id=<?php echo $project_id; ?>`;
+                    });
+                } else {
+                    // Show error alert
+                    Swal.fire({
+                        title: 'Error!',
+                        text: response.message || 'An error occurred while updating the project',
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                }
+            },
+            error: function(xhr, status, error) {
+                // Show error alert
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'An error occurred while updating the project',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+            }
+        });
+    });
 });
 </script>
 <!-- /.content-wrapper -->

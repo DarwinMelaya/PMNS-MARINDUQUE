@@ -26,7 +26,7 @@ $date_approved = $_POST['date_approved'];
 $prog_desc = $_POST['prog_desc'];
 $duration_from = $_POST['duration_from'];
 $duration_to = $_POST['duration_to'];
-$proponent = $_POST['proponent'];
+$proponent = isset($_POST['proponent']) ? array_filter($_POST['proponent']) : array(); // Remove empty values
 $collab = isset($_POST['collab']) ? array_filter($_POST['collab']) : array(); // Remove empty values
 $investment_map = $_POST['investment_map'];
 $counterpart_fund = $_POST['cpf'];
@@ -55,7 +55,7 @@ $street = mysqli_real_escape_string($conn, $street);
 $prog_desc = mysqli_real_escape_string($conn, $prog_desc);
 $duration_from = mysqli_real_escape_string($conn, $duration_from);
 $duration_to = mysqli_real_escape_string($conn, $duration_to);
-$proponent = mysqli_real_escape_string($conn, $proponent);
+$proponent = implode(';', $proponent); // Join with semicolon separator
 $collab = implode(';', $collab); // Join with semicolon separator
 $investment_map = mysqli_real_escape_string($conn, $investment_map);
 $counterdesc = mysqli_real_escape_string($conn, $counterdesc);
@@ -107,10 +107,14 @@ $stmt->bind_param(
 
 // Execute statement
 if ($stmt->execute()) {
-    header("Location: ../frontend/edit_cest.php?id=".$project_id);
-    exit(); // Stop further execution
+    // Instead of redirecting, send a JSON success response
+    header('Content-Type: application/json');
+    echo json_encode(['status' => 'success', 'message' => 'Project updated successfully']);
+    exit();
 } else {
-    echo "Error updating record: " . $conn->error;
+    header('Content-Type: application/json');
+    echo json_encode(['status' => 'error', 'message' => 'Error updating record: ' . $conn->error]);
+    exit();
 }
 
 // Close statement and connection
