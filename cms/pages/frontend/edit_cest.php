@@ -198,7 +198,14 @@ include 'template/header.php';
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label>Collaborating Agency</label>
-                                    <input type="text" id="collab" name="collab" placeholder="Enter Collaborating Agency" class="form-control" value="<?php echo $row['collaborating_agencies']; ?>">
+                                    <div id="collab-container">
+                                        <div class="input-group mb-2">
+                                            <input type="text" class="form-control collab-input" name="collab[]" placeholder="Enter Collaborating Agency" value="">
+                                            <div class="input-group-append">
+                                                <button type="button" class="btn btn-success add-collab"><i class="fas fa-plus"></i></button>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <div class="col-md-4">
@@ -375,6 +382,46 @@ include 'template/header.php';
             });
         }
     }
+</script>
+<script>
+// Initialize with existing collaborating agencies
+$(document).ready(function() {
+    const existingCollabs = <?php echo json_encode(explode(';', $row['collaborating_agencies'])); ?>;
+    
+    if (existingCollabs && existingCollabs[0]) {
+        // Clear the default empty input
+        $('#collab-container').empty();
+        
+        // Add each existing collab
+        existingCollabs.forEach((collab, index) => {
+            addCollabField(collab.trim());
+        });
+    }
+    
+    // Add new collaborating agency field
+    $('.add-collab').on('click', function() {
+        addCollabField();
+    });
+    
+    // Remove collaborating agency field
+    $(document).on('click', '.remove-collab', function() {
+        $(this).closest('.input-group').remove();
+    });
+    
+    function addCollabField(value = '') {
+        const field = `
+            <div class="input-group mb-2">
+                <input type="text" class="form-control collab-input" name="collab[]" placeholder="Enter Collaborating Agency" value="${value}">
+                <div class="input-group-append">
+                    ${$('#collab-container .input-group').length === 0 
+                        ? '<button type="button" class="btn btn-success add-collab"><i class="fas fa-plus"></i></button>'
+                        : '<button type="button" class="btn btn-danger remove-collab"><i class="fas fa-minus"></i></button>'}
+                </div>
+            </div>
+        `;
+        $('#collab-container').append(field);
+    }
+});
 </script>
 <!-- /.content-wrapper -->
 <?php
