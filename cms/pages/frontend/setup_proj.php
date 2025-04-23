@@ -382,14 +382,6 @@ include 'template/header.php';
                         </div>
 
                         <!-- Counterpart Description -->
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="form-group">
-                                    <label>Counterpart Description</label>
-                                    <textarea name="counterdesc" id="counterdesc" rows="3" class="form-control" placeholder="Enter detailed description of counterpart funding..."></textarea>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
 
@@ -463,77 +455,9 @@ include 'template/header.php';
                     <!-- /.row -->
 
                 </div>
-                <div class="card card-danger">
-                    <div class="card-header">
-                        <h3 class="card-title">
-                            Beneficiary Profile
-                        </h3>
-                        <div class="card-tools">
-                            <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                                <i class="fas fa-minus"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-3">
-                                <div class="form-group">
-                                    <label>First name</label>
-                                    <input type="text" name="fname" class="form-control" placeholder="Enter first name">
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="form-group">
-                                    <label>Middle name</label>
-                                    <input type="text" name="mname" class="form-control" placeholder="Enter middle/initial name">
-                                </div>
-                            </div>
-                            <div class="col-md-2">
-                                <div class="form-group">
-                                    <label>Last name</label>
-                                    <input type="text" name="lname" class="form-control" placeholder="Enter last name">
-                                </div>
-                            </div>
-                            <div class="col-md-2">
-                                <div class="form-group">
-                                    <label>Sex</label>
-                                    <select name="setgender" id="setgender" class="form-control">
-                                        <option value="">Select Gender</option>
-                                        <option value="1">Male</option>
-                                        <option value="2">Female</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-md-2">
-                                <div class="form-group">
-                                    <label>Age</label>
-                                    <input type="number" name="age" min="1" class="form-control" placeholder="Enter age">
-                                </div>
-                            </div>
-                        </div>
+ <!-- Beneficiary Profile -->
 
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label>Liquidated</label>
-                                    <input type="number" min="0" name="liquidated" placeholder="Enter Liquidated" class="form-control">
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label>Date Approved</label>
-                                    <input type="date" name="date_approved" class="form-control">
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label>Email Address</label>
-                                    <input type="email" name="project_email" placeholder="Enter Email Address" class="form-control">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+
                 <!-- Hidden fields with improved documentation -->
                 <input type="hidden" name="cpf" id="cpf" value="0"> <!-- counterpart_fund: Total amount contributed by the beneficiary/partner -->
                 <input type="hidden" name="ps" id="ps" value="0"> <!-- personal_service: Budget allocated for human resources/labor -->
