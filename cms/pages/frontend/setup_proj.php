@@ -185,9 +185,9 @@ include 'template/header.php';
                                             <label>MSME Profile <span style="color:red;">*</span></label>
                                             <select name="msme_profile" class="form-control select2" required>
                                                 <option value="">Select MSME Profile</option>
-                                                <option value="micro">Micro</option>
-                                                <option value="small">Small</option>
-                                                <option value="medium">Medium</option>
+                                                <option value="micro">Micro (Not more than ₱3,000,000)</option>
+                                                <option value="small">Small (₱3,000,001 to ₱15,000,000)</option>
+                                                <option value="medium">Medium (₱15,000,001 to ₱100,000,000)</option>
                                             </select>
                                         </div>
                                     </div>
