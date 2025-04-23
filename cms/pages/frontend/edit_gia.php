@@ -242,70 +242,159 @@ include 'template/header.php';
                         </div>
                     </div>
                     <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-3">
-                                <div class="form-group">
-                                    <label>Personal Services <span style="color:red">*</span></label>
-                                    <input type="number" id="ps" name="ps" max="99999999" step="0.01" min="0" class="form-control" placeholder="0.00" value="<?php echo $row['personal_service']; ?>" required>
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="form-group">
-                                    <label>Maintenance and Other Expenses <span style="color:red">*</span></label>
-                                    <input type="number" id="moe" name="moe" max="99999999" step="0.01" min="0" class="form-control" placeholder="0.00" value="<?php echo $row['maintenance_other']; ?>" required>
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="form-group">
-                                    <label>Equipment Outlay <span style="color:red">*</span></label>
-                                    <input type="number" id="eo" name="eo" max="99999999" step="0.01" min="0" class="form-control" placeholder="0.00" value="<?php echo $row['equip_outlay']; ?>" required>
-                                </div>
-                            </div>
-
-                            <div class="col-md-3">
-                                <div class="form-group">
-                                    <label>Counterpart Funding <span style="color:red">*</span></label>
-                                    <input type="number" id="cpf" max="99999999" step="0.01" min="0" name="cpf" class="form-control" placeholder="0.00" value="<?php echo $row['counterpart_fund']; ?>" required>
+                        <!-- Expense Items Section -->
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <div class="card card-outline card-primary">
+                                    <div class="card-header">
+                                        <h5 class="m-0"><i class="fas fa-money-bill mr-2"></i>Expense Items</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div id="expense-items">
+                                            <div class="row mb-2 align-items-center">
+                                                <div class="col-md-4">
+                                                    <label class="mb-0">Type</label>
+                                                    <select class="form-control expense-type" name="expense_type[]">
+                                                        <option value="">Select Type</option>
+                                                        <option value="ps">Personal Services (PS)</option>
+                                                        <option value="mooe">Maintenance and Other Operating Expenses (MOOE)</option>
+                                                        <option value="eo">Equipment Outlay (EO)</option>
+                                                        <option value="cpf">Counterpart Funding (CPF)</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label class="mb-0">Amount (₱)</label>
+                                                    <input type="number" class="form-control expense-amount" name="expense_amount[]" 
+                                                           placeholder="Enter amount" step="0.01" min="0" onchange="calculateExpenseTotals()">
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <label class="mb-0">&nbsp;</label>
+                                                    <button type="button" class="btn btn-success btn-block" onclick="addExpenseItem()">
+                                                        <i class="fas fa-plus"></i> Add Item
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
+
+                        <!-- Original input fields (hidden but preserved for form submission) -->
+                        <input type="hidden" id="ps" name="ps" value="<?php echo $row['personal_service']; ?>">
+                        <input type="hidden" id="moe" name="moe" value="<?php echo $row['maintenance_other']; ?>">
+                        <input type="hidden" id="eo" name="eo" value="<?php echo $row['equip_outlay']; ?>">
+                        <input type="hidden" id="cpf" name="cpf" value="<?php echo $row['counterpart_fund']; ?>">
+
+                        <!-- Equipment Outlay Details -->
                         <div class="row">
-                            <div class="col-md-12">
+                            <div class="col-12">
                                 <div class="form-group">
                                     <label>Equipment Outlay Details <span style="color:red">*</span></label>
-                                    <textarea name="eo_details" id="eo_details" rows="3" class="form-control" placeholder="Enter Equipment Outlay Details" required><?php echo isset($row['eo_details']) ? stripslashes($row['eo_details']) : ''; ?></textarea>
+                                    <textarea name="eo_details" id="eo_details" class="form-control" 
+                                              placeholder="Enter Equipment Outlay Details" required><?php echo isset($row['eo_details']) ? stripslashes($row['eo_details']) : ''; ?></textarea>
                                 </div>
                             </div>
                         </div>
 
+                        <!-- Counterpart Description -->
                         <div class="row">
-                            <div class="col-md-12">
+                            <div class="col-12">
                                 <div class="form-group">
                                     <label>Counterpart Description <span style="color:red">*</span></label>
-                                    <textarea name="counterdesc" id="counterdesc" rows="3" class="form-control" placeholder="Enter counterpart Description" required><?php echo stripslashes($row['counterpart_desc']); ?></textarea>
+                                    <textarea name="counterdesc" id="counterdesc" rows="3" class="form-control" 
+                                              placeholder="Enter counterpart Description" required><?php echo stripslashes($row['counterpart_desc']); ?></textarea>
                                 </div>
                             </div>
                         </div>
-                        <div class="row">
 
+                        <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label>Mode of Procurement <span style="color:red">*</span></label>
                                     <select name="modepro" id="modepro" class="form-control" required>
-                                        <option value="1" <?php if ($row['modepro'] == 1) {
-                                                                echo 'selected';
-                                                            }; ?>>Direct Release</option>
-                                        <option value="2" <?php if ($row['modepro'] == 2) {
-                                                                echo 'selected';
-                                                            }; ?>>Regional Office Procurement</option>
+                                        <option value="1" <?php if ($row['modepro'] == 1) { echo 'selected'; }; ?>>Direct Release</option>
+                                        <option value="2" <?php if ($row['modepro'] == 2) { echo 'selected'; }; ?>>Regional Office Procurement</option>
                                     </select>
                                 </div>
                             </div>
-
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label>Date Fund Released <span style="color:red">*</span></label>
                                     <input type="date" name="date_released" class="form-control" value="<?php echo $row['date_released']; ?>" required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Totals Section -->
+                        <div class="row mt-4">
+                            <div class="col-12">
+                                <div class="card card-outline card-info">
+                                    <div class="card-header">
+                                        <h5 class="m-0"><i class="fas fa-calculator mr-2"></i>Summary</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label>Total PS</label>
+                                                    <div class="input-group">
+                                                        <div class="input-group-prepend">
+                                                            <span class="input-group-text">₱</span>
+                                                        </div>
+                                                        <input type="number" id="total_ps" class="form-control text-right" readonly value="<?php echo $row['personal_service']; ?>">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label>Total MOOE</label>
+                                                    <div class="input-group">
+                                                        <div class="input-group-prepend">
+                                                            <span class="input-group-text">₱</span>
+                                                        </div>
+                                                        <input type="number" id="total_mooe" class="form-control text-right" readonly value="<?php echo $row['maintenance_other']; ?>">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label>Total EO</label>
+                                                    <div class="input-group">
+                                                        <div class="input-group-prepend">
+                                                            <span class="input-group-text">₱</span>
+                                                        </div>
+                                                        <input type="number" id="total_eo" class="form-control text-right" readonly value="<?php echo $row['equip_outlay']; ?>">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label>Total CPF</label>
+                                                    <div class="input-group">
+                                                        <div class="input-group-prepend">
+                                                            <span class="input-group-text">₱</span>
+                                                        </div>
+                                                        <input type="number" id="total_cpf" class="form-control text-right" readonly value="<?php echo $row['counterpart_fund']; ?>">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row mt-3">
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <label><strong>Overall Project Cost</strong></label>
+                                                    <div class="input-group">
+                                                        <div class="input-group-prepend">
+                                                            <span class="input-group-text">₱</span>
+                                                        </div>
+                                                        <input type="number" id="total_project_cost" class="form-control text-right font-weight-bold" readonly 
+                                                               value="<?php echo $row['personal_service'] + $row['maintenance_other'] + $row['equip_outlay'] + $row['counterpart_fund']; ?>">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -398,6 +487,123 @@ include 'template/header.php';
 
     function successEdit() {
         toastr.success('Success! The project data was successfully updated.')
+    }
+
+    function addExpenseItem() {
+        const newItem = `
+            <div class="row mb-2 align-items-center expense-row">
+                <div class="col-md-4">
+                    <select class="form-control expense-type" name="expense_type[]">
+                        <option value="">Select Type</option>
+                        <option value="ps">Personal Services (PS)</option>
+                        <option value="mooe">Maintenance and Other Operating Expenses (MOOE)</option>
+                        <option value="eo">Equipment Outlay (EO)</option>
+                        <option value="cpf">Counterpart Funding (CPF)</option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <input type="number" class="form-control expense-amount" name="expense_amount[]" 
+                           placeholder="Enter amount" step="0.01" min="0" onchange="calculateExpenseTotals()">
+                </div>
+                <div class="col-md-2">
+                    <button type="button" class="btn btn-danger btn-block" onclick="removeExpenseItem(this)">
+                        <i class="fas fa-minus"></i> Remove
+                    </button>
+                </div>
+            </div>
+        `;
+        document.getElementById('expense-items').insertAdjacentHTML('beforeend', newItem);
+    }
+
+    function removeExpenseItem(button) {
+        button.closest('.expense-row').remove();
+        calculateExpenseTotals();
+    }
+
+    function calculateExpenseTotals() {
+        let totalPS = 0;
+        let totalMOOE = 0;
+        let totalEO = 0;
+        let totalCPF = 0;
+
+        const rows = document.querySelectorAll('#expense-items .row');
+        rows.forEach(row => {
+            const type = row.querySelector('.expense-type').value;
+            const amount = parseFloat(row.querySelector('.expense-amount').value) || 0;
+
+            switch(type) {
+                case 'ps':
+                    totalPS += amount;
+                    break;
+                case 'mooe':
+                    totalMOOE += amount;
+                    break;
+                case 'eo':
+                    totalEO += amount;
+                    break;
+                case 'cpf':
+                    totalCPF += amount;
+                    break;
+            }
+        });
+
+        // Update both visible and hidden fields
+        document.getElementById('total_ps').value = totalPS;
+        document.getElementById('total_mooe').value = totalMOOE;
+        document.getElementById('total_eo').value = totalEO;
+        document.getElementById('total_cpf').value = totalCPF;
+        document.getElementById('ps').value = totalPS;
+        document.getElementById('moe').value = totalMOOE;
+        document.getElementById('eo').value = totalEO;
+        document.getElementById('cpf').value = totalCPF;
+        document.getElementById('total_project_cost').value = totalPS + totalMOOE + totalEO + totalCPF;
+    }
+
+    // Initialize first expense item with existing values
+    window.addEventListener('DOMContentLoaded', (event) => {
+        const ps = parseFloat(document.getElementById('ps').value) || 0;
+        const moe = parseFloat(document.getElementById('moe').value) || 0;
+        const eo = parseFloat(document.getElementById('eo').value) || 0;
+        const cpf = parseFloat(document.getElementById('cpf').value) || 0;
+
+        if (ps > 0) {
+            addExpenseItemWithValue('ps', ps);
+        }
+        if (moe > 0) {
+            addExpenseItemWithValue('mooe', moe);
+        }
+        if (eo > 0) {
+            addExpenseItemWithValue('eo', eo);
+        }
+        if (cpf > 0) {
+            addExpenseItemWithValue('cpf', cpf);
+        }
+    });
+
+    function addExpenseItemWithValue(type, amount) {
+        const newItem = `
+            <div class="row mb-2 align-items-center expense-row">
+                <div class="col-md-4">
+                    <select class="form-control expense-type" name="expense_type[]">
+                        <option value="">Select Type</option>
+                        <option value="ps" ${type === 'ps' ? 'selected' : ''}>Personal Services (PS)</option>
+                        <option value="mooe" ${type === 'mooe' ? 'selected' : ''}>Maintenance and Other Operating Expenses (MOOE)</option>
+                        <option value="eo" ${type === 'eo' ? 'selected' : ''}>Equipment Outlay (EO)</option>
+                        <option value="cpf" ${type === 'cpf' ? 'selected' : ''}>Counterpart Funding (CPF)</option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <input type="number" class="form-control expense-amount" name="expense_amount[]" 
+                           value="${amount}" step="0.01" min="0" onchange="calculateExpenseTotals()">
+                </div>
+                <div class="col-md-2">
+                    <button type="button" class="btn btn-danger btn-block" onclick="removeExpenseItem(this)">
+                        <i class="fas fa-minus"></i> Remove
+                    </button>
+                </div>
+            </div>
+        `;
+        document.getElementById('expense-items').insertAdjacentHTML('beforeend', newItem);
     }
 </script>
 <!-- /.content-wrapper -->
