@@ -11,21 +11,32 @@ if ($_SESSION['id'] == "") header("Location:../../../");
 // Include the  database connection php script
 include '../../connection/connection.php';
 
+// Get email from the form
+$project_email = isset($_POST['email']) ? $_POST['email'] : '';
+
+// Calculate totals from arrays
+$setup_amounts = isset($_POST['setup_amount']) ? $_POST['setup_amount'] : array();
+$counterpart_amounts = isset($_POST['counterpart_amount']) ? $_POST['counterpart_amount'] : array();
+
+$eo = array_sum(array_map('floatval', $setup_amounts)); // Total SETUP funding
+$cpf = array_sum(array_map('floatval', $counterpart_amounts)); // Total Counterpart funding
+
 // Prepare SQL statement
-$sql = "INSERT INTO projects (proj_email,project_code, project_type,tag,project_title, project_desc, typeorg, beneficiaries,collaborating_agencies,
-implementor, counterpart_fund, date_released, personal_service, maintenance_other, equip_outlay, modepro,
-counterpart_desc, street, province, city_mun, barangay, project_fname, project_mname, project_lname, project_sex, project_age,
-date_approved,liquidated,user_id, date_encoded)
-VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+$sql = "INSERT INTO projects (proj_email, project_code, project_type, tag, project_title, project_desc, 
+    typeorg, beneficiaries, collaborating_agencies, implementor, counterpart_fund, 
+    date_released, personal_service, maintenance_other, equip_outlay, modepro,
+    counterpart_desc, street, province, city_mun, barangay, project_fname, 
+    project_mname, project_lname, project_sex, project_age,
+    date_approved, liquidated, user_id, date_encoded)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 $date_encoded = date("Y-m-d | H:i:s");
 
 // Prepare and bind parameters
 $stmt = $conn->prepare($sql); 
 $stmt->bind_param(
-
     "ssisssisssdsdddissiiisssiisiis",
-    $_POST['project_email'],
+    $project_email,
     $_POST['project_code'],
     $_POST['project_type'],
     $_POST['tag'],
@@ -35,11 +46,11 @@ $stmt->bind_param(
     $_POST['beneficiaries'],
     $_POST['collaborating_agencies'],
     $_POST['implementor'],
-    $_POST['cpf'],
+    $cpf,
     $_POST['date_released'],
     $_POST['ps'],
     $_POST['moe'],
-    $_POST['eo'],
+    $eo,
     $_POST['modepro'],
     $_POST['counterdesc'],
     $_POST['street'],

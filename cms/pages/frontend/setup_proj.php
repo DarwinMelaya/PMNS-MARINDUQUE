@@ -57,7 +57,8 @@ include 'template/header.php';
                                     <div class="col-md-5">
                                         <div class="form-group">
                                             <label>Project Tag</label>
-                                            <input type="text" name="tag" placeholder="Enter Tag" class="form-control">
+                                            <input type="text" name="tag" placeholder="Enter tags separated by commas (e.g. research, technology, agriculture)" class="form-control">
+                                            <small class="text-muted">(Tag projects with identifiers for easy reference and categorization)</small>
                                         </div>
                                     </div>
                                 </div>
@@ -274,7 +275,7 @@ include 'template/header.php';
                                             <div class="row mb-2 align-items-center">
                                                 <div class="col-md-4">
                                                     <label class="mb-0">Type</label>
-                                                    <select class="form-control" name="setup_type[]">
+                                                    <select class="form-control" name="setup_type[]" required>
                                                         <option value="">Select Type</option>
                                                         <option value="equipment">Equipment</option>
                                                         <option value="others">Others</option>
@@ -282,7 +283,7 @@ include 'template/header.php';
                                                 </div>
                                                 <div class="col-md-6">
                                                     <label class="mb-0">Amount (₱)</label>
-                                                    <input type="number" class="form-control setup-amount" name="setup_amount[]" placeholder="Enter amount" step="0.01" min="0" onchange="calculateTotals()">
+                                                    <input type="number" class="form-control setup-amount" name="setup_amount[]" placeholder="Enter amount" step="0.01" min="0" onchange="calculateTotals()" required>
                                                 </div>
                                                 <div class="col-md-2">
                                                     <label class="mb-0">&nbsp;</label>
@@ -469,6 +470,22 @@ include 'template/header.php';
                 <div style="text-align: center">
                     <button type="submit" class="btn btn-primary btn-lg">Submit Project</button>
                 </div><br /><br /><br />
+
+                <!-- Add these hidden fields right before the submit button -->
+                <input type="hidden" name="project_email" value="<?php echo isset($_POST['email']) ? $_POST['email'] : ''; ?>">
+                <input type="hidden" name="project_type" value="2">
+                <input type="hidden" name="beneficiaries" value="0">
+                <input type="hidden" name="collaborating_agencies" value="">
+                <input type="hidden" name="implementor" value="">
+                <input type="hidden" name="typeorg" value="1">
+                <input type="hidden" name="counterdesc" value="">
+                <input type="hidden" name="fname" value="">
+                <input type="hidden" name="mname" value="">
+                <input type="hidden" name="lname" value="">
+                <input type="hidden" name="setgender" value="">
+                <input type="hidden" name="age" value="0">
+                <input type="hidden" name="date_approved" value="<?php echo date('Y-m-d'); ?>">
+                <input type="hidden" name="liquidated" value="0">
             </form>
         </div>
         <!-- /.container-fluid -->
@@ -484,7 +501,6 @@ include 'template/header.php';
             $("#city_mun").html("<option value=''>Select City/Municipality</option>");
             $("#barangay").val("N/A");
         } else {
-
             $.ajax({
                 type: "GET",
                 url: "../backend/get_citymun.php",
@@ -498,6 +514,114 @@ include 'template/header.php';
             });
         }
     }
+
+    function addSetupItem() {
+        const setupItemsDiv = document.getElementById('setup-items');
+        const newRow = document.createElement('div');
+        newRow.className = 'row mb-2 align-items-center';
+        newRow.innerHTML = `
+            <div class="col-md-4">
+                <label class="mb-0">Type</label>
+                <select class="form-control" name="setup_type[]">
+                    <option value="">Select Type</option>
+                    <option value="equipment">Equipment</option>
+                    <option value="others">Others</option>
+                </select>
+            </div>
+            <div class="col-md-6">
+                <label class="mb-0">Amount (₱)</label>
+                <input type="number" class="form-control setup-amount" name="setup_amount[]" placeholder="Enter amount" step="0.01" min="0" onchange="calculateTotals()">
+            </div>
+            <div class="col-md-2">
+                <label class="mb-0">&nbsp;</label>
+                <button type="button" class="btn btn-danger btn-block" onclick="removeItem(this)">
+                    <i class="fas fa-minus"></i> Remove
+                </button>
+            </div>
+        `;
+        setupItemsDiv.appendChild(newRow);
+    }
+
+    function addCounterpartItem() {
+        const counterpartItemsDiv = document.getElementById('counterpart-items');
+        const newRow = document.createElement('div');
+        newRow.className = 'row mb-2 align-items-center';
+        newRow.innerHTML = `
+            <div class="col-md-4">
+                <label class="mb-0">Type</label>
+                <select class="form-control" name="counterpart_type[]">
+                    <option value="">Select Type</option>
+                    <option value="land">Land</option>
+                    <option value="building">Building</option>
+                    <option value="others">Others</option>
+                </select>
+            </div>
+            <div class="col-md-6">
+                <label class="mb-0">Amount (₱)</label>
+                <input type="number" class="form-control counterpart-amount" name="counterpart_amount[]" placeholder="Enter amount" step="0.01" min="0" onchange="calculateTotals()">
+            </div>
+            <div class="col-md-2">
+                <label class="mb-0">&nbsp;</label>
+                <button type="button" class="btn btn-danger btn-block" onclick="removeItem(this)">
+                    <i class="fas fa-minus"></i> Remove
+                </button>
+            </div>
+        `;
+        counterpartItemsDiv.appendChild(newRow);
+    }
+
+    function removeItem(button) {
+        button.closest('.row').remove();
+        calculateTotals();
+    }
+
+    function calculateTotals() {
+        let setupTotal = 0;
+        document.querySelectorAll('.setup-amount').forEach(input => {
+            setupTotal += parseFloat(input.value || 0);
+        });
+
+        let counterpartTotal = 0;
+        document.querySelectorAll('.counterpart-amount').forEach(input => {
+            counterpartTotal += parseFloat(input.value || 0);
+        });
+
+        // Update display totals
+        document.getElementById('total_setup').value = setupTotal.toFixed(2);
+        document.getElementById('total_counterpart').value = counterpartTotal.toFixed(2);
+        document.getElementById('total_project_cost').value = (setupTotal + counterpartTotal).toFixed(2);
+
+        // Update hidden fields for form submission
+        document.getElementById('eo').value = setupTotal.toFixed(2);
+        document.getElementById('cpf').value = counterpartTotal.toFixed(2);
+        document.getElementById('ps').value = '0.00';
+        document.getElementById('moe').value = '0.00';
+    }
+
+    // Add this function to validate form before submission
+    document.querySelector('form').addEventListener('submit', function(e) {
+        const setupAmounts = document.querySelectorAll('.setup-amount');
+        const counterpartAmounts = document.querySelectorAll('.counterpart-amount');
+        let hasValue = false;
+
+        setupAmounts.forEach(input => {
+            if (parseFloat(input.value || 0) > 0) hasValue = true;
+        });
+
+        counterpartAmounts.forEach(input => {
+            if (parseFloat(input.value || 0) > 0) hasValue = true;
+        });
+
+        if (!hasValue) {
+            e.preventDefault();
+            alert('Please enter at least one amount in either SETUP Funding or Counterpart Funding');
+        }
+    });
+
+    // Initialize calculations when page loads
+    document.addEventListener('DOMContentLoaded', function() {
+        calculateTotals();
+    });
 </script>
 
 <!-- /.content-wrapper -->
