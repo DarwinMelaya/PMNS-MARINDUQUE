@@ -59,10 +59,16 @@ include 'template/header.php';
                     <input type="hidden" name="project_type" value="1">
                     <div class="card-body">
                         <div class="row">
-                            <div class="col-md-12">
+                            <div class="col-md-7">
                                 <div class="form-group">
                                     <label>Project Code <span style="color:red">*</span></label>
                                     <input type="text" class="form-control" placeholder="Project Code" name="project_code" style="width: 100%;" required value="<?php echo $row['project_code']; ?>">
+                                </div>
+                            </div>
+                            <div class="col-md-5">
+                                <div class="form-group">
+                                    <label>Project Tag<span style="color:red">*</span></label>
+                                    <input type="text" class="form-control" placeholder="Project Tag" name="tag" style="width: 100%;" required value="<?php echo $row['tag']; ?>">
                                 </div>
                             </div>
                         </div>
