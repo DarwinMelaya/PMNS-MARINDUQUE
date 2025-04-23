@@ -135,6 +135,22 @@ include 'template/header.php';
                         </div>
                         <!-- /.card-header -->
                         <div class="card-body">
+                            <div class="row mb-3">
+                                <div class="col-md-3">
+                                    <label for="tagFilter">Filter by Tag:</label>
+                                    <select class="form-control" id="tagFilter">
+                                        <option value="">All Tags</option>
+                                        <?php
+                                        include '../../connection/connection.php';
+                                        $tagQuery = "SELECT DISTINCT tag FROM projects WHERE project_type = '1' AND tag IS NOT NULL AND tag != '' ORDER BY tag";
+                                        $tagResult = $conn->query($tagQuery);
+                                        while ($tagRow = $tagResult->fetch_assoc()) {
+                                            echo "<option value='" . htmlspecialchars($tagRow['tag']) . "'>" . htmlspecialchars($tagRow['tag']) . "</option>";
+                                        }
+                                        ?>
+                                    </select>
+                                </div>
+                            </div>
                             <table id="example2" class="table table-bordered table-hover">
                                 <thead>
                                     <tr>
@@ -393,6 +409,29 @@ include 'template/header.php';
             document.querySelectorAll(selector).forEach(el => {
                 el.classList.add('no-print');
             });
+        });
+    });
+
+    // Add this new function for tag filtering
+    document.getElementById('tagFilter').addEventListener('change', function() {
+        const selectedTag = this.value;
+        const table = $('#example2').DataTable();
+        
+        // Clear any existing filter and apply new filter if a tag is selected
+        table.column(0).search(selectedTag).draw();
+    });
+
+    // Modify the DataTable initialization
+    $(document).ready(function() {
+        $('#example2').DataTable({
+            "paging": true,
+            "lengthChange": true,
+            "searching": true,
+            "ordering": true,
+            "info": true,
+            "autoWidth": false,
+            "responsive": true,
+            "order": [[4, "desc"]] // Sort by Date Approved by default
         });
     });
 </script>
