@@ -44,10 +44,16 @@ include 'template/header.php';
                     <input type="hidden" name="project_type" value="1">
                     <div class="card-body">
                         <div class="row">
-                            <div class="col-md-12">
+                            <div class="col-md-7">
                                 <div class="form-group">
                                     <label>Project Code <span style="color:red">*</span></label>
                                     <input type="text" class="form-control" placeholder="Project Code" name="project_code" style="width: 100%;" required>
+                                </div>
+                            </div>
+                            <div class="col-md-5">
+                                <div class="form-group">
+                                    <label>Project Tag<span style="color:red">*</span></label>
+                                    <input type="text" class="form-control" placeholder="Project Tag" name="tag" style="width: 100%;" required>
                                 </div>
                             </div>
                         </div>
@@ -256,6 +262,16 @@ include 'template/header.php';
                                 </div>
                             </div>
                         </div>
+
+                        <div class="col-md-4">
+                                                    <label class="mb-0">Mode Of Procurement<span style="color:red">*</span></label>
+                                                    <select class="form-control modepro" name="modepro[]">
+                                                        <option value="1">Direct Release</option>
+                                                        <option value="2">Regional Office Procurement</option>
+                                                    </select>
+                                                </div>
+
+
 
                         <!-- Totals Section -->
                         <div class="row mt-4">

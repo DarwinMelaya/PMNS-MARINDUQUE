@@ -18,6 +18,7 @@ include '../../connection/connection.php';
 $project_email = $_POST['proj_email'];
 $project_type = $_POST['project_type'];
 $project_code = $_POST['project_code'];
+$tag = $_POST['tag'];
 $project_title = $_POST['project_title'];
 $province = $_POST['province'];
 $city_mun = $_POST['city_mun'];
@@ -50,6 +51,7 @@ $beneficiary_remarks = mysqli_real_escape_string($conn, $_POST['beneficiary_rema
 // Sanitize input data
 $project_email = mysqli_real_escape_string($conn, $project_email);
 $project_code = mysqli_real_escape_string($conn, $project_code);
+$tag = mysqli_real_escape_string($conn, $tag);
 $project_title = mysqli_real_escape_string($conn, $project_title);
 $province = mysqli_real_escape_string($conn, $province);
 $city_mun = mysqli_real_escape_string($conn, $city_mun);
@@ -74,6 +76,7 @@ echo "Equipment Outlay Details: " . $_POST['eo_details']; // For debugging
 $sql = "UPDATE projects SET 
         proj_email=?,
         project_code=?,
+        tag=?,
         project_type=?,
         investment_map=?,
         sector=?,
@@ -107,9 +110,10 @@ $sql = "UPDATE projects SET
 // Prepare and bind parameters - updated with correct number of types
 $stmt = $conn->prepare($sql);
 $stmt->bind_param(
-    "ssisssssssssssssddddssssssiissi",  // Exactly 31 type definitions
+    "sssisssssssssssssddddssssssiissi",  // Exactly 31 type definitions
     $project_email,      // s
     $project_code,       // s
+    $tag,       // s
     $project_type,       // i
     $investment_map,     // s
     $sector,            // s
