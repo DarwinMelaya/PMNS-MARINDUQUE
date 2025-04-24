@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 17, 2025 at 07:39 AM
+-- Generation Time: Apr 24, 2025 at 04:07 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -1501,6 +1501,18 @@ INSERT INTO `barangay` (`region_c`, `province_c`, `citymun_c`, `barangay_c`, `ba
 ('17', '059', '17', '005', 'SANTO NI?O'),
 ('17', '059', '17', '006', 'SAN ISIDRO'),
 ('17', '051', '10', '040', 'NAIBUAN');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `beneficiary_types`
+--
+
+CREATE TABLE `beneficiary_types` (
+  `id` int(11) NOT NULL,
+  `type_name` varchar(255) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -4306,7 +4318,7 @@ INSERT INTO `projects` (`project_id`, `proj_email`, `project_code`, `tag`, `proj
 (143, 'pstc.romblon@mimaropa.dost.gov.ph', 'QR-TTC-NC-03-080', '', '4', 'STI Promotion', NULL, 'Solar Energy System for ICT and Operation Center of LGU Boac ', 'The general objective of this project is to assist the Municipality of Boac in transitioning into Smart Sustainable Community by empowering them with uninterrupted operations using solar energy system. ', '2024-07-01', '2025-07-01', 'no', NULL, NULL, 'LGU Boac offices that use ICT Services a d the clients of the Municipality of Boac ', '', NULL, 'LGU Boac (ICT Section)', NULL, '2024-06-10', NULL, NULL, '', '40', '0', 'Isok 1 ', NULL, NULL, NULL, 'Installede 8 kW and 6 kW Solar Energy System ', 14, NULL, NULL, NULL, NULL, NULL, 0.00, 0.00, 52245.33, 900000.00, NULL, 'no', NULL, NULL, NULL, NULL, '1', NULL, 'Wokers ', 0, 0, '', '2024-06-10', '2024-12-16 11:29:24', NULL),
 (144, 'pstc.palawan@mimaropa.dost.gov.ph', 'QR-TTC-NC-05-102', '', '1', 'STI Promotion', NULL, 'Driving Progress Through Technology: An Integrated Web-based System For MEEDO-Bataraza Town Center Tenants Information Management and Monitoring', 'This project aims to aid the municipal economic enterprise development office of LGU-Bataraza Palawan by developing and efficient and reliable web-based system that will serve as management and monitoring platform for the MEEDO-Bataraza Town Center Tenants related records and transactions', '2023-12-01', '2024-12-01', 'no', NULL, NULL, 'MEEDO-Bataraza Town Center', 'LGU-Bataraza', NULL, 'Jennifer G. Rabang ', NULL, '2024-10-17', NULL, NULL, '', '53', '0', '', NULL, NULL, NULL, 'Information System', 13, NULL, NULL, NULL, NULL, NULL, 401344.03, 0.00, 79520.00, 0.00, NULL, 'no', NULL, NULL, NULL, NULL, '1', NULL, 'Tenants', 0, 85439, '', '2023-11-03', '2024-12-16 11:32:53', NULL),
 (145, 'technoup@mimaropa.dost.gov.ph', 'QT-TTC-NC-03-079', '', '3', 'CEST', NULL, 'Facility Enhancement of Steam- based Multi Commodity Dehydrator (Phase II) ', 'The project aims to fully harness and maximize the potential of the solar-powered multi commodity dehydrator located in Malbog, Buenavista. ', '2024-08-01', '2025-08-01', 'no', NULL, NULL, 'LGU Buenavista ', '', NULL, 'LGU Buenavista ', NULL, '2024-07-04', NULL, NULL, '', '40', '0', '', NULL, NULL, NULL, 'Facility and Staff', 14, NULL, NULL, NULL, NULL, NULL, 0.00, 0.00, 157389.33, 1157514.54, NULL, 'no', NULL, NULL, NULL, NULL, '1', NULL, 'LGU ', 0, 0, '', '2024-07-04', '2024-12-16 11:38:34', NULL),
-(146, 'technoup@mimaropa.dost.gov.ph', '-', '', '3', 'CEST', NULL, 'Showcasing Water Technology Using RAM Pump System in Brgy. Sihi ', 'This project aims to capacitate the residents of Brgy. Sihi, Buenavista with improved access to water through the provision of a RAM Pump System. ', '2024-01-01', '2025-01-01', 'no', NULL, NULL, 'LGU Sihi ', '', NULL, 'Barangay Local Government Unit Sihi', NULL, '2024-05-30', NULL, NULL, '', '40', '02', 'Brgy. Sihi', NULL, NULL, NULL, 'Labor ', 14, NULL, NULL, NULL, NULL, NULL, 82568.00, 0.00, 100000.00, 1300000.00, NULL, 'no', NULL, NULL, NULL, NULL, '1', NULL, 'LGU ', 400, 1620, '', '2024-05-30', '2024-12-16 11:44:24', '2025-01-06 13:40:37'),
+(146, 'technoup@mimaropa.dost.gov.ph', '-', '', '3', 'CEST', NULL, 'Showcasing Water Technology Using RAM Pump System in Brgy. Sihi ', 'This project aims to capacitate the residents of Brgy. Sihi, Buenavista with improved access to water through the provision of a RAM Pump System. ', '2024-01-01', '2025-01-01', 'no', NULL, NULL, 'LGU Sihi ', 'Daars', NULL, 'Barangay Local Government Unit Sihi', NULL, '2024-05-30', NULL, NULL, '', '40', '02', 'Brgy. Sihi', NULL, NULL, NULL, 'Labor ', 14, NULL, NULL, NULL, NULL, NULL, 82568.00, 0.00, 100000.00, 1300000.00, NULL, 'no', NULL, NULL, NULL, NULL, '1', NULL, 'LGU ', 400, 1620, '', '2024-05-30', '2024-12-16 11:44:24', '2025-04-22 14:16:14'),
 (147, 'pam14dechavez@gmail.com', 'QR-TTC-NC-03-0777', '', '1', 'STI Promotion', NULL, 'Sea Cucumber Hatchery for Sustainable Aqua Culture ', 'This project aims to establish a hatchery for potential cucumber aqua culture in Marinduque ', '2024-06-01', '2027-06-01', 'no', NULL, NULL, 'Staff researchers, Students, Traders, Municipal Agriculture Offices ', '', NULL, 'Marinduque State College ', NULL, '2024-05-01', NULL, NULL, '', '40', '', 'Bahi ', NULL, NULL, NULL, 'Labor ', 14, NULL, NULL, NULL, NULL, NULL, 0.00, 0.00, 0.00, 0.00, NULL, 'no', NULL, NULL, NULL, NULL, '1', NULL, 'School ', 0, 0, '', '2024-05-01', '2024-12-16 11:49:28', '2025-03-31 15:11:05'),
 (148, 'pstc.ormindoro@mimaropa.dost.gov.ph', 'QR-TTC-NC-02-095', '', '1', 'Assistance to R&D', NULL, 'Development of Thermally-Processed Ready-to-Eat Arroz Caldo in Three Variants', 'The \\\"Development of Ready-to-Eat Rice-Based Meals Utilizing Mobile Processing Facility-Water Retort\\r\\nModule\\\" aims to provide value-addition services for the local farmers in the region, particularly in the\\r\\nprovince of Oriental Mindoro, while simultaneously providing consumers with nutritious, convenient, and\\r\\nlocally sourced food options.', '2024-12-01', '2025-11-30', 'no', NULL, NULL, 'MinSU-Calapan Campus', '', NULL, 'Mindo State University - Calapan City', NULL, '2024-12-30', NULL, NULL, '', '52', '05', '', NULL, NULL, NULL, '2 unit - Laptop\\r\\nNitrogen Flushing Band Sealer\\r\\nTemperature Controlled-storage bin\\r\\nAnalytical Balance\\r\\nWater Activity Meter\\r\\npH meter\\r\\nViscometer', 13, NULL, NULL, NULL, NULL, NULL, 612000.00, 0.00, 1329945.92, 625870.00, NULL, 'no', NULL, NULL, NULL, NULL, '1', NULL, 'University', 0, 0, '', '2024-12-12', '2025-03-21 14:07:21', '2025-03-21 14:08:17'),
 (150, 'technoup@mimaropa.dost.gov.ph', 'QR-TTC-NC-03-077', '', '1', 'Assistance to R&D', NULL, 'Sea Cucumber Hatchery for Sustainable Aquaculture', 'cfghxdkfhfs;eobjsopef', '2024-06-01', '2025-06-01', 'no', NULL, NULL, '', '', NULL, 'Marinduque State University', NULL, '2024-06-01', 0, NULL, '', '40', '3', '', NULL, NULL, NULL, 'kjzcghawg;ohow', 13, NULL, NULL, NULL, NULL, NULL, 16804000.00, 0.00, 500000.00, 1000000.00, NULL, 'no', NULL, NULL, NULL, NULL, '1', NULL, '', 0, 0, '', '2024-05-21', '2025-03-31 14:52:25', NULL),
@@ -4344,8 +4356,12 @@ INSERT INTO `projects` (`project_id`, `proj_email`, `project_code`, `tag`, `proj
 (184, 'rueladriguez@gmail.com', 'QR-TTC-NC-04-099', '', '1', 'STI Promotion', NULL, 'Solid Waste Management through Junk Compactor Technology for Romblonâ€™s Top Tourist Destinations', '-', '2024-12-01', '2025-12-01', 'no', NULL, NULL, '', '', NULL, 'Romblon State University (RSU)', NULL, '2024-12-01', 0, NULL, '', '59', '09', '', NULL, NULL, NULL, '-', 13, NULL, NULL, NULL, NULL, NULL, 0.00, 0.00, 408000.00, 930000.00, NULL, 'no', NULL, NULL, NULL, NULL, '1', NULL, '', 0, 0, '', '2024-12-03', '2025-04-11 11:49:57', '2025-04-11 13:03:05'),
 (185, 'ptsariego@mimaropa.dost.gov.ph', 'QR TTC-NC-05-092', '', '1', 'STI Promotion', NULL, 'Promoting Science, Technology, and Innovation in Palawan through STI Town Hop Phase 3', '-', '2023-05-01', '2023-12-01', 'no', NULL, NULL, '', '', NULL, 'PSTO-Palawan', NULL, '2023-05-01', 0, NULL, '', '53', '0', '', NULL, NULL, NULL, '-', 13, NULL, NULL, NULL, NULL, NULL, 0.00, 0.00, 415000.00, 0.00, NULL, 'no', NULL, NULL, NULL, NULL, '1', NULL, '', 0, 0, '', '2023-04-24', '2025-04-11 13:32:14', NULL),
 (186, 'irvencuen@yahoo.com', 'QR TTC-NC-05-094', '', '1', 'STI Promotion', NULL, 'Upscaling Production of Newly-Innovated Coconut Chips Product Through Mechanization Phase 2', '-', '2023-05-05', '2024-05-05', 'no', NULL, NULL, '', '', NULL, 'Western Philippines University', NULL, '2023-05-05', 0, NULL, '', '53', '1', '', NULL, NULL, NULL, '-', 13, NULL, NULL, NULL, NULL, NULL, 545530.00, 0.00, 590709.32, 0.00, NULL, 'no', NULL, NULL, NULL, NULL, '1', NULL, '', 0, 0, '', '2023-05-05', '2025-04-11 13:42:19', NULL),
-(187, 'SJOM/09175621793/vprde@omsc.ph.education', 'QR TTC-NC-05-100', '', '1', 'STI Promotion', NULL, 'S&T Intervention Support to Conduct School-Based Training Workshop on Mechatronics and Robotics Cum 21st Century Skills Leadership Training and Symposium to the Three (3) Clusters of Fifteen (15) High Schools in West Coast of Palawan', '-', '2024-01-01', '2027-01-01', 'no', NULL, NULL, '', '', NULL, 'DepEd Palawan', NULL, '2024-01-01', 0, NULL, '', '53', '1', '', NULL, NULL, NULL, '-', 13, NULL, NULL, NULL, NULL, NULL, 0.00, 0.00, 100000.00, 813000.00, NULL, 'no', NULL, NULL, NULL, NULL, '1', NULL, '', 0, 0, '', '2023-12-15', '2025-04-11 13:59:54', NULL),
-(188, 'dsds@gmail.com', '334343', '', '1', 'CEST', NULL, 'Darwin', 'sdsds', '2025-04-15', '2025-06-15', 'no', NULL, NULL, 'sasas', 'dsds', NULL, 'dsds', NULL, '2025-04-14', 0, NULL, 'Dahlia', '40', '01', 'Apitong', NULL, NULL, NULL, 'Darwin', 21, NULL, NULL, NULL, NULL, NULL, 5435345.00, 2334535.00, 23453543.00, 23345345.00, '0', 'no', NULL, NULL, NULL, NULL, '2', NULL, '0', 0, 0, '', '0000-00-00', '2025-04-15 13:33:29', '2025-04-17 13:37:55');
+(187, 'SJOM/09175621793/vprde@omsc.ph.education', 'QR TTC-NC-05-100', 'dsdsds', '1', 'STI Promotion', NULL, 'S&T Intervention Support to Conduct School-Based Training Workshop on Mechatronics and Robotics Cum 21st Century Skills Leadership Training and Symposium to the Three (3) Clusters of Fifteen (15) High Schools in West Coast of Palawan', '-', '2024-01-01', '2027-01-01', 'no', NULL, NULL, '', '', NULL, 'DepEd Palawan', NULL, '2024-01-01', 0, NULL, '', '53', '01', '', NULL, NULL, NULL, '-', 13, NULL, NULL, NULL, NULL, NULL, 0.00, 0.00, 100000.00, 813000.00, 'dsds', 'no', NULL, NULL, NULL, NULL, '1', NULL, '', 0, 0, '', '2023-12-15', '2025-04-11 13:59:54', '2025-04-23 14:04:34'),
+(189, NULL, 'sddsdsds', 'ddsdsd', NULL, '', NULL, 'Dadssdf', 'fdfd', NULL, NULL, 'no', NULL, NULL, NULL, NULL, NULL, '', NULL, '2025-04-23', NULL, NULL, 'ewew', '315', '0', '0', NULL, NULL, NULL, NULL, 21, NULL, NULL, NULL, NULL, NULL, 0.00, 0.00, 0.00, 0.00, NULL, 'no', NULL, NULL, NULL, NULL, '1', NULL, NULL, NULL, NULL, NULL, NULL, '2025-04-23 | 10:34:26', NULL),
+(192, NULL, '23', 'Darwin', NULL, '', NULL, 'Darwin', 'dsd', NULL, NULL, 'no', NULL, NULL, NULL, NULL, NULL, '', NULL, '2025-04-23', NULL, NULL, 'Dahlia', '40', '1', '0', NULL, NULL, NULL, NULL, 21, NULL, NULL, NULL, NULL, NULL, 45.00, 0.00, 0.00, 34.00, NULL, 'no', NULL, NULL, NULL, NULL, '1', NULL, NULL, NULL, NULL, NULL, NULL, '2025-04-23 | 15:10:11', NULL),
+(193, NULL, 'sddsdsds', 'Darwin', NULL, '', NULL, 'Darwin', 's', NULL, NULL, 'no', NULL, NULL, NULL, NULL, NULL, '', NULL, '2025-04-23', NULL, NULL, '434', '40', '2', '0', NULL, NULL, NULL, NULL, 21, NULL, NULL, NULL, NULL, NULL, 434.00, 0.00, 0.00, 233.98, NULL, 'no', NULL, NULL, NULL, NULL, '1', NULL, NULL, NULL, NULL, NULL, NULL, '2025-04-23 | 15:17:19', NULL),
+(195, 'try@gmail.com', 'sddsdsds', 'Darwin, Melaya', '2', '', NULL, 'Darwin', 'sas', NULL, NULL, 'no', NULL, NULL, '0', '', 0, '', 1, '2025-04-23', NULL, NULL, 'fddfd', '40', '0', '0', NULL, NULL, NULL, '', 21, '', '', '', '0', 0, 32322.99, 0.00, 0.00, 231.98, NULL, 'no', NULL, NULL, NULL, NULL, '1', 0.00, NULL, NULL, NULL, NULL, '2025-04-23', '2025-04-23 | 15:25:50', NULL),
+(196, 'try@gmail.com', 'sddsdsds', 'Darwin', '1', 'CEST', NULL, 'Darwin', NULL, '2025-04-23', '2025-04-23', 'no', NULL, NULL, 'sasas', 'ewew', NULL, 'ewe', NULL, NULL, 0, NULL, 'Dahlia', '40', NULL, 'sa', NULL, NULL, NULL, 'd', 21, NULL, NULL, NULL, NULL, NULL, 0.00, 34.00, 44.99, 0.00, NULL, 'no', NULL, NULL, NULL, NULL, 'Array', NULL, '2323', 34, 4, 'gf', '2025-04-23', '2025-04-23 15:41:43', NULL);
 
 -- --------------------------------------------------------
 
@@ -4658,6 +4674,12 @@ INSERT INTO `users` (`user_id`, `username`, `password`, `user_fname`, `user_lnam
 --
 
 --
+-- Indexes for table `beneficiary_types`
+--
+ALTER TABLE `beneficiary_types`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `consultancies`
 --
 ALTER TABLE `consultancies`
@@ -4734,6 +4756,12 @@ ALTER TABLE `users`
 --
 
 --
+-- AUTO_INCREMENT for table `beneficiary_types`
+--
+ALTER TABLE `beneficiary_types`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+--
 -- AUTO_INCREMENT for table `consultancies`
 --
 ALTER TABLE `consultancies`
@@ -4779,7 +4807,7 @@ ALTER TABLE `progress_uploads`
 -- AUTO_INCREMENT for table `projects`
 --
 ALTER TABLE `projects`
-  MODIFY `project_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=189;
+  MODIFY `project_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=197;
 
 --
 -- AUTO_INCREMENT for table `reports_list`
