@@ -331,7 +331,16 @@ include 'template/header.php';
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label>Type of Beneficiaries</label>
-                                    <input type="text" class="form-control" name="type_bene" id="type_bene" placeholder="Enter type of beneficiaries" value="<?php echo stripslashes($row['type_of_beneficiaries']); ?>">
+                                    <div class="input-group">
+                                        <select class="form-control" name="type_bene" id="type_bene">
+                                            <option value="">Select Type</option>
+                                        </select>
+                                        <div class="input-group-append">
+                                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addTypeModal">
+                                                <i class="fas fa-plus"></i> Add New
+                                            </button>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -365,7 +374,35 @@ include 'template/header.php';
     <!-- /.content -->
 </div>
 
-
+<!-- Modal for Adding New Type -->
+<div class="modal fade" id="addTypeModal" tabindex="-1" role="dialog" aria-labelledby="addTypeModalLabel" aria-hidden="true" style="z-index: 1050;">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addTypeModalLabel">Manage Beneficiary Types</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="newTypeName">New Type Name</label>
+                    <input type="text" class="form-control" id="newTypeName" autocomplete="off">
+                </div>
+                <div class="mt-3">
+                    <h6>Existing Types</h6>
+                    <ul class="list-group" id="existingTypes">
+                        <!-- Types will be loaded here -->
+                    </ul>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="addNewType">Add Type</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <script type="text/javascript" src="functionality/proj_script.js"></script>
 <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
@@ -518,6 +555,144 @@ $(document).ready(function() {
                     text: 'An error occurred while updating the project',
                     icon: 'error',
                     confirmButtonText: 'OK'
+                });
+            }
+        });
+    });
+});
+</script>
+<script>
+$(document).ready(function() {
+    // Initialize the modal
+    $('#addTypeModal').on('shown.bs.modal', function () {
+        $('#newTypeName').focus();
+    });
+
+    // Clear input when modal is closed
+    $('#addTypeModal').on('hidden.bs.modal', function () {
+        $('#newTypeName').val('');
+    });
+
+    // Handle enter key in the input field
+    $('#newTypeName').on('keypress', function(e) {
+        if (e.which === 13) { // Enter key
+            e.preventDefault();
+            $('#addNewType').click();
+        }
+    });
+
+    // Load beneficiary types
+    function loadBeneficiaryTypes() {
+        $.ajax({
+            type: "POST",
+            url: "../backend/manage_beneficiary_types.php",
+            data: { action: "get" },
+            success: function(response) {
+                if (response.success) {
+                    let dropdown = $("#type_bene");
+                    dropdown.empty();
+                    dropdown.append('<option value="">Select Type</option>');
+                    
+                    let typesList = $("#existingTypes");
+                    typesList.empty();
+                    
+                    response.types.forEach(function(type) {
+                        // Set selected if it matches the current type
+                        const selected = (type.type_name === '<?php echo $row["type_of_beneficiaries"]; ?>') ? 'selected' : '';
+                        dropdown.append(`<option value="${type.id}" ${selected}>${type.type_name}</option>`);
+                        
+                        typesList.append(`
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                ${type.type_name}
+                                <button class="btn btn-danger btn-sm remove-type" data-id="${type.id}">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </li>
+                        `);
+                    });
+                }
+            }
+        });
+    }
+
+    // Load types on page load
+    loadBeneficiaryTypes();
+
+    // Add new type
+    $("#addNewType").click(function() {
+        let typeName = $("#newTypeName").val().trim();
+        if (typeName) {
+            $.ajax({
+                type: "POST",
+                url: "../backend/manage_beneficiary_types.php",
+                data: {
+                    action: "add",
+                    type_name: typeName
+                },
+                success: function(response) {
+                    if (response.success) {
+                        $("#newTypeName").val('');
+                        loadBeneficiaryTypes();
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success!',
+                            text: 'New beneficiary type has been added',
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error!',
+                            text: 'Failed to add new beneficiary type'
+                        });
+                    }
+                }
+            });
+        }
+    });
+
+    // Remove type
+    $(document).on('click', '.remove-type', function() {
+        let typeId = $(this).data('id');
+        let typeName = $(this).closest('li').text().trim();
+        
+        Swal.fire({
+            title: 'Are you sure?',
+            text: `Do you want to remove "${typeName}"?`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, remove it!',
+            cancelButtonText: 'Cancel'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    type: "POST",
+                    url: "../backend/manage_beneficiary_types.php",
+                    data: {
+                        action: "remove",
+                        type_id: typeId
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            loadBeneficiaryTypes();
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Deleted!',
+                                text: 'The beneficiary type has been removed',
+                                showConfirmButton: false,
+                                timer: 1500
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error!',
+                                text: 'Failed to remove the beneficiary type'
+                            });
+                        }
+                    }
                 });
             }
         });
