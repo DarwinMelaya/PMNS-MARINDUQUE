@@ -283,7 +283,7 @@ include 'template/header.php';
                                                 </div>
                                                 <div class="col-md-6">
                                                     <label class="mb-0">Amount (₱)</label>
-                                                    <input type="number" class="form-control setup-amount" name="setup_amount[]" placeholder="Enter amount" step="0.01" min="0" onchange="calculateTotals()" required>
+                                                    <input type="text" class="form-control setup-amount" name="setup_amount[]" placeholder="Enter amount" oninput="formatAmount(this)" onchange="calculateTotals()" required>
                                                 </div>
                                                 <div class="col-md-2">
                                                     <label class="mb-0">&nbsp;</label>
@@ -319,7 +319,7 @@ include 'template/header.php';
                                                 </div>
                                                 <div class="col-md-6">
                                                     <label class="mb-0">Amount (₱)</label>
-                                                    <input type="number" class="form-control counterpart-amount" name="counterpart_amount[]" placeholder="Enter amount" step="0.01" min="0" onchange="calculateTotals()">
+                                                    <input type="text" class="form-control counterpart-amount" name="counterpart_amount[]" placeholder="Enter amount" oninput="formatAmount(this)" onchange="calculateTotals()">
                                                 </div>
                                                 <div class="col-md-2">
                                                     <label class="mb-0">&nbsp;</label>
@@ -350,7 +350,7 @@ include 'template/header.php';
                                                         <div class="input-group-prepend">
                                                             <span class="input-group-text">₱</span>
                                                         </div>
-                                                        <input type="number" id="total_setup" class="form-control text-right" readonly>
+                                                        <input type="text" id="total_setup" class="form-control text-right" readonly>
                                                     </div>
                                                 </div>
                                             </div>
@@ -361,7 +361,7 @@ include 'template/header.php';
                                                         <div class="input-group-prepend">
                                                             <span class="input-group-text">₱</span>
                                                         </div>
-                                                        <input type="number" id="total_counterpart" class="form-control text-right" readonly>
+                                                        <input type="text" id="total_counterpart" class="form-control text-right" readonly>
                                                     </div>
                                                 </div>
                                             </div>
@@ -372,7 +372,7 @@ include 'template/header.php';
                                                         <div class="input-group-prepend">
                                                             <span class="input-group-text">₱</span>
                                                         </div>
-                                                        <input type="number" id="total_project_cost" class="form-control text-right font-weight-bold" readonly>
+                                                        <input type="text" id="total_project_cost" class="form-control text-right font-weight-bold" readonly>
                                                     </div>
                                                 </div>
                                             </div>
@@ -515,6 +515,19 @@ include 'template/header.php';
         }
     }
 
+    // Add these utility functions for number formatting
+    function formatNumberWithCommas(number) {
+        return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+
+    function unformatNumber(numberString) {
+        if (!numberString) return 0;
+        // Remove commas and convert to float
+        const cleanNumber = numberString.replace(/,/g, '');
+        const parsed = parseFloat(cleanNumber);
+        return isNaN(parsed) ? 0 : parsed;
+    }
+
     function addSetupItem() {
         const setupItemsDiv = document.getElementById('setup-items');
         const newRow = document.createElement('div');
@@ -530,7 +543,7 @@ include 'template/header.php';
             </div>
             <div class="col-md-6">
                 <label class="mb-0">Amount (₱)</label>
-                <input type="number" class="form-control setup-amount" name="setup_amount[]" placeholder="Enter amount" step="0.01" min="0" onchange="calculateTotals()">
+                <input type="text" class="form-control setup-amount" name="setup_amount[]" placeholder="Enter amount" oninput="formatAmount(this)" onchange="calculateTotals()">
             </div>
             <div class="col-md-2">
                 <label class="mb-0">&nbsp;</label>
@@ -558,7 +571,7 @@ include 'template/header.php';
             </div>
             <div class="col-md-6">
                 <label class="mb-0">Amount (₱)</label>
-                <input type="number" class="form-control counterpart-amount" name="counterpart_amount[]" placeholder="Enter amount" step="0.01" min="0" onchange="calculateTotals()">
+                <input type="text" class="form-control counterpart-amount" name="counterpart_amount[]" placeholder="Enter amount" oninput="formatAmount(this)" onchange="calculateTotals()">
             </div>
             <div class="col-md-2">
                 <label class="mb-0">&nbsp;</label>
@@ -570,6 +583,40 @@ include 'template/header.php';
         counterpartItemsDiv.appendChild(newRow);
     }
 
+    function formatAmount(input) {
+        // Save cursor position
+        const start = input.selectionStart;
+        const end = input.selectionEnd;
+        const previousLength = input.value.length;
+
+        // Remove any non-digit characters except decimal point
+        let value = input.value.replace(/[^\d.]/g, '');
+        
+        // Ensure only one decimal point
+        let parts = value.split('.');
+        if (parts.length > 2) {
+            parts = [parts[0], parts.slice(1).join('')];
+        }
+        if (parts[1]) {
+            parts[1] = parts[1].slice(0, 2); // Limit to 2 decimal places
+        }
+        value = parts.join('.');
+        
+        // Format with commas for thousands
+        if (value) {
+            const num = value.split('.');
+            num[0] = num[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            input.value = num.join('.');
+        } else {
+            input.value = '';
+        }
+
+        // Restore cursor position
+        const newLength = input.value.length;
+        const cursorAdjust = newLength - previousLength;
+        input.setSelectionRange(start + cursorAdjust, end + cursorAdjust);
+    }
+
     function removeItem(button) {
         button.closest('.row').remove();
         calculateTotals();
@@ -578,44 +625,38 @@ include 'template/header.php';
     function calculateTotals() {
         let setupTotal = 0;
         document.querySelectorAll('.setup-amount').forEach(input => {
-            setupTotal += parseFloat(input.value || 0);
+            const value = parseFloat(input.value.replace(/,/g, '') || 0);
+            setupTotal += isNaN(value) ? 0 : value;
         });
 
         let counterpartTotal = 0;
         document.querySelectorAll('.counterpart-amount').forEach(input => {
-            counterpartTotal += parseFloat(input.value || 0);
+            const value = parseFloat(input.value.replace(/,/g, '') || 0);
+            counterpartTotal += isNaN(value) ? 0 : value;
         });
 
-        // Update display totals
-        document.getElementById('total_setup').value = setupTotal.toFixed(2);
-        document.getElementById('total_counterpart').value = counterpartTotal.toFixed(2);
-        document.getElementById('total_project_cost').value = (setupTotal + counterpartTotal).toFixed(2);
+        // Update display totals with comma formatting
+        document.getElementById('total_setup').value = formatNumberWithCommas(setupTotal.toFixed(2));
+        document.getElementById('total_counterpart').value = formatNumberWithCommas(counterpartTotal.toFixed(2));
+        document.getElementById('total_project_cost').value = formatNumberWithCommas((setupTotal + counterpartTotal).toFixed(2));
 
-        // Update hidden fields for form submission
-        document.getElementById('eo').value = setupTotal.toFixed(2);
-        document.getElementById('cpf').value = counterpartTotal.toFixed(2);
-        document.getElementById('ps').value = '0.00';
-        document.getElementById('moe').value = '0.00';
+        // Update hidden fields with full values
+        document.getElementById('eo').value = setupTotal;
+        document.getElementById('cpf').value = counterpartTotal;
     }
 
-    // Add this function to validate form before submission
+    // Update the form submission handler
     document.querySelector('form').addEventListener('submit', function(e) {
-        const setupAmounts = document.querySelectorAll('.setup-amount');
-        const counterpartAmounts = document.querySelectorAll('.counterpart-amount');
-        let hasValue = false;
-
-        setupAmounts.forEach(input => {
-            if (parseFloat(input.value || 0) > 0) hasValue = true;
+        e.preventDefault(); // Prevent default submission
+        
+        // Remove commas from all amount inputs before submission
+        document.querySelectorAll('.setup-amount, .counterpart-amount').forEach(input => {
+            // Remove commas but keep the decimal places
+            input.value = input.value.replace(/,/g, '');
         });
 
-        counterpartAmounts.forEach(input => {
-            if (parseFloat(input.value || 0) > 0) hasValue = true;
-        });
-
-        if (!hasValue) {
-            e.preventDefault();
-            alert('Please enter at least one amount in either SETUP Funding or Counterpart Funding');
-        }
+        // Now submit the form
+        this.submit();
     });
 
     // Initialize calculations when page loads

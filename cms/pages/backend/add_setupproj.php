@@ -14,12 +14,20 @@ include '../../connection/connection.php';
 // Get email from the form
 $project_email = isset($_POST['email']) ? $_POST['email'] : '';
 
-// Calculate totals from arrays
+// Calculate totals from arrays with proper decimal handling
 $setup_amounts = isset($_POST['setup_amount']) ? $_POST['setup_amount'] : array();
 $counterpart_amounts = isset($_POST['counterpart_amount']) ? $_POST['counterpart_amount'] : array();
 
-$eo = array_sum(array_map('floatval', $setup_amounts)); // Total SETUP funding
-$cpf = array_sum(array_map('floatval', $counterpart_amounts)); // Total Counterpart funding
+// Calculate totals without using number_format initially
+$eo = 0;
+foreach ($setup_amounts as $amount) {
+    $eo += (float)str_replace(',', '', $amount);
+}
+
+$cpf = 0;
+foreach ($counterpart_amounts as $amount) {
+    $cpf += (float)str_replace(',', '', $amount);
+}
 
 // Prepare SQL statement
 $sql = "INSERT INTO projects (proj_email, project_code, project_type, tag, project_title, project_desc, 
@@ -33,7 +41,12 @@ VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 
 $date_encoded = date("Y-m-d | H:i:s");
 
 // Prepare and bind parameters
-$stmt = $conn->prepare($sql); 
+$stmt = $conn->prepare($sql);
+
+// Don't format the numbers until the final binding
+$ps = (float)$_POST['ps'];
+$moe = (float)$_POST['moe'];
+
 $stmt->bind_param(
     "ssisssisssdsdddissiiisssiisiis",
     $project_email,
@@ -46,11 +59,11 @@ $stmt->bind_param(
     $_POST['beneficiaries'],
     $_POST['collaborating_agencies'],
     $_POST['implementor'],
-    $cpf,
+    $cpf,  // Direct float value
     $_POST['date_released'],
-    $_POST['ps'],
-    $_POST['moe'],
-    $eo,
+    $ps,   // Direct float value
+    $moe,  // Direct float value
+    $eo,   // Direct float value
     $_POST['modepro'],
     $_POST['counterdesc'],
     $_POST['street'],

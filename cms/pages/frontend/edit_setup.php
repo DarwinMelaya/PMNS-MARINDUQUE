@@ -175,7 +175,7 @@ $conn->close();
                 </div>
                 <div class="card card-blue">
                     <div class="card-header">
-                        <h3 class="card-title">Financial Funding</h3>
+                        <h3 class="card-title">Budgetary Requirements</h3>
                         <div class="card-tools">
                             <button type="button" class="btn btn-tool" data-card-widget="collapse">
                                 <i class="fas fa-minus"></i>
@@ -183,71 +183,128 @@ $conn->close();
                         </div>
                     </div>
                     <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-3">
-                                <div class="form-group">
-                                    <label>Personal Services</label>
-                                    <input type="number" id="ps" name="ps" max="99999999" step="0.01" min="0" class="form-control" placeholder="0.00" value="<?php echo $personal_service; ?>">
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="form-group">
-                                    <label>Maintenance and Other Expenses</label>
-                                    <input type="number" id="moe" name="moe" max="99999999" step="0.01" min="0" class="form-control" placeholder="0.00" value="<?php echo $maintenance_other; ?>">
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="form-group">
-                                    <label>Equipment Outlay</label>
-                                    <input type="number" id="eo" name="eo" max="99999999" step="0.01" min="0" class="form-control" placeholder="0.00" value="<?php echo $equip_outlay; ?>">
-                                </div>
-                            </div>
-
-                            <div class="col-md-3">
-                                <div class="form-group">
-                                    <label>Counterpart Funding</label>
-                                    <input type="number" id="cpf" max="99999999" step="0.01" min="0" name="cpf" class="form-control" placeholder="0.00" value="<?php echo $counterpar_fund; ?>">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <label>Equipment Outlay Details <span style="color:red">*</span></label>
-                                    <textarea name="eo_details" id="eo_details" rows="3" class="form-control" placeholder="Enter Equipment Outlay Details" required></textarea>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <label>Counterpart Description</label>
-                                    <textarea name="counterdesc" id="counterdesc" rows="3" class="form-control" placeholder="Enter counterpart Description"><?php echo $counterpart_desc; ?></textarea>
+                        <!-- SETUP Funding Section -->
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <div class="card card-outline card-primary">
+                                    <div class="card-header">
+                                        <h5 class="m-0"><i class="fas fa-tools mr-2"></i>SETUP Funding</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div id="setup-items">
+                                            <div class="row mb-2 align-items-center">
+                                                <div class="col-md-4">
+                                                    <label class="mb-0">Type</label>
+                                                    <select class="form-control" name="setup_type[]" required>
+                                                        <option value="">Select Type</option>
+                                                        <option value="equipment" <?php echo ($equip_outlay > 0) ? 'selected' : ''; ?>>Equipment</option>
+                                                        <option value="others">Others</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label class="mb-0">Amount (₱)</label>
+                                                    <input type="text" class="form-control setup-amount" name="setup_amount[]" 
+                                                           value="<?php echo number_format($equip_outlay, 2); ?>" 
+                                                           placeholder="Enter amount" oninput="formatAmount(this)" 
+                                                           onchange="calculateTotals()" required>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <label class="mb-0">&nbsp;</label>
+                                                    <button type="button" class="btn btn-success btn-block" onclick="addSetupItem()">
+                                                        <i class="fas fa-plus"></i> Add Item
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="row">
 
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>Mode of Procurement</label>
-                                    <select name="modepro" id="modepro" class="form-control">
-                                        <option value="">Select mode</option>
-                                        <option value="1" <?php if ($modepro == 1) {
-                                                                echo 'selected';
-                                                            }; ?>>Direct Release</option>
-                                        <option value="2" <?php if ($modepro == 2) {
-                                                                echo 'selected';
-                                                            }; ?>>Regional Office Procurement</option>
-                                    </select>
+                        <!-- Counterpart Funding Section -->
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <div class="card card-outline card-success">
+                                    <div class="card-header">
+                                        <h5 class="m-0"><i class="fas fa-handshake mr-2"></i>Counterpart Funding</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div id="counterpart-items">
+                                            <div class="row mb-2 align-items-center">
+                                                <div class="col-md-4">
+                                                    <label class="mb-0">Type</label>
+                                                    <select class="form-control" name="counterpart_type[]">
+                                                        <option value="">Select Type</option>
+                                                        <option value="land">Land</option>
+                                                        <option value="building">Building</option>
+                                                        <option value="others">Others</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label class="mb-0">Amount (₱)</label>
+                                                    <input type="text" class="form-control counterpart-amount" 
+                                                           name="counterpart_amount[]" 
+                                                           value="<?php echo number_format($counterpar_fund, 2); ?>" 
+                                                           placeholder="Enter amount" oninput="formatAmount(this)" 
+                                                           onchange="calculateTotals()">
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <label class="mb-0">&nbsp;</label>
+                                                    <button type="button" class="btn btn-success btn-block" onclick="addCounterpartItem()">
+                                                        <i class="fas fa-plus"></i> Add Item
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
+                        </div>
 
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>Date Fund Released</span></label>
-                                    <input type="date" name="date_released" class="form-control" value="<?php echo $date_fund_rel; ?>">
+                        <!-- Totals Section -->
+                        <div class="row mt-4">
+                            <div class="col-12">
+                                <div class="card card-outline card-info">
+                                    <div class="card-header">
+                                        <h5 class="m-0"><i class="fas fa-calculator mr-2"></i>Summary</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label>Total SETUP Funding</label>
+                                                    <div class="input-group">
+                                                        <div class="input-group-prepend">
+                                                            <span class="input-group-text">₱</span>
+                                                        </div>
+                                                        <input type="text" id="total_setup" class="form-control text-right" readonly>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label>Total Counterpart Funding</label>
+                                                    <div class="input-group">
+                                                        <div class="input-group-prepend">
+                                                            <span class="input-group-text">₱</span>
+                                                        </div>
+                                                        <input type="text" id="total_counterpart" class="form-control text-right" readonly>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label><strong>Overall Project Cost</strong></label>
+                                                    <div class="input-group">
+                                                        <div class="input-group-prepend">
+                                                            <span class="input-group-text">₱</span>
+                                                        </div>
+                                                        <input type="text" id="total_project_cost" class="form-control text-right font-weight-bold" readonly>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -420,6 +477,8 @@ $conn->close();
                 <div style="text-align: center">
                     <button type="submit" class="btn btn-primary btn-lg">Update Project</button>
                 </div><br /><br /><br />
+                <input type="hidden" id="eo" name="eo" value="<?php echo $equip_outlay; ?>">
+                <input type="hidden" id="cpf" name="cpf" value="<?php echo $counterpar_fund; ?>">
             </form>
         </div>
         <!-- /.container-fluid -->
@@ -431,3 +490,155 @@ $conn->close();
 <?php
 include 'template/footer.php';
 ?>
+
+<!-- Add the JavaScript functions at the bottom of the file, before </body> -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script>
+    function formatNumberWithCommas(number) {
+        return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+
+    function unformatNumber(numberString) {
+        if (!numberString) return 0;
+        // Remove commas and convert to float
+        const cleanNumber = numberString.replace(/,/g, '');
+        const parsed = parseFloat(cleanNumber);
+        return isNaN(parsed) ? 0 : parsed;
+    }
+
+    function addSetupItem() {
+        const setupItemsDiv = document.getElementById('setup-items');
+        const newRow = document.createElement('div');
+        newRow.className = 'row mb-2 align-items-center';
+        newRow.innerHTML = `
+            <div class="col-md-4">
+                <label class="mb-0">Type</label>
+                <select class="form-control" name="setup_type[]">
+                    <option value="">Select Type</option>
+                    <option value="equipment">Equipment</option>
+                    <option value="others">Others</option>
+                </select>
+            </div>
+            <div class="col-md-6">
+                <label class="mb-0">Amount (₱)</label>
+                <input type="text" class="form-control setup-amount" name="setup_amount[]" placeholder="Enter amount" oninput="formatAmount(this)" onchange="calculateTotals()">
+            </div>
+            <div class="col-md-2">
+                <label class="mb-0">&nbsp;</label>
+                <button type="button" class="btn btn-danger btn-block" onclick="removeItem(this)">
+                    <i class="fas fa-minus"></i> Remove
+                </button>
+            </div>
+        `;
+        setupItemsDiv.appendChild(newRow);
+    }
+
+    function addCounterpartItem() {
+        const counterpartItemsDiv = document.getElementById('counterpart-items');
+        const newRow = document.createElement('div');
+        newRow.className = 'row mb-2 align-items-center';
+        newRow.innerHTML = `
+            <div class="col-md-4">
+                <label class="mb-0">Type</label>
+                <select class="form-control" name="counterpart_type[]">
+                    <option value="">Select Type</option>
+                    <option value="land">Land</option>
+                    <option value="building">Building</option>
+                    <option value="others">Others</option>
+                </select>
+            </div>
+            <div class="col-md-6">
+                <label class="mb-0">Amount (₱)</label>
+                <input type="text" class="form-control counterpart-amount" name="counterpart_amount[]" placeholder="Enter amount" oninput="formatAmount(this)" onchange="calculateTotals()">
+            </div>
+            <div class="col-md-2">
+                <label class="mb-0">&nbsp;</label>
+                <button type="button" class="btn btn-danger btn-block" onclick="removeItem(this)">
+                    <i class="fas fa-minus"></i> Remove
+                </button>
+            </div>
+        `;
+        counterpartItemsDiv.appendChild(newRow);
+    }
+
+    function formatAmount(input) {
+        // Save cursor position
+        const start = input.selectionStart;
+        const end = input.selectionEnd;
+        const previousLength = input.value.length;
+
+        // Remove any non-digit characters except decimal point
+        let value = input.value.replace(/[^\d.]/g, '');
+        
+        // Ensure only one decimal point
+        let parts = value.split('.');
+        if (parts.length > 2) {
+            parts = [parts[0], parts.slice(1).join('')];
+        }
+        if (parts[1]) {
+            parts[1] = parts[1].slice(0, 2); // Limit to 2 decimal places
+        }
+        value = parts.join('.');
+        
+        // Format with commas for thousands
+        if (value) {
+            const num = value.split('.');
+            num[0] = num[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            input.value = num.join('.');
+        } else {
+            input.value = '';
+        }
+
+        // Restore cursor position
+        const newLength = input.value.length;
+        const cursorAdjust = newLength - previousLength;
+        input.setSelectionRange(start + cursorAdjust, end + cursorAdjust);
+    }
+
+    function removeItem(button) {
+        button.closest('.row').remove();
+        calculateTotals();
+    }
+
+    function calculateTotals() {
+        let setupTotal = 0;
+        document.querySelectorAll('.setup-amount').forEach(input => {
+            const value = parseFloat(input.value.replace(/,/g, '') || 0);
+            setupTotal += isNaN(value) ? 0 : value;
+        });
+
+        let counterpartTotal = 0;
+        document.querySelectorAll('.counterpart-amount').forEach(input => {
+            const value = parseFloat(input.value.replace(/,/g, '') || 0);
+            counterpartTotal += isNaN(value) ? 0 : value;
+        });
+
+        // Update display totals with comma formatting
+        document.getElementById('total_setup').value = formatNumberWithCommas(setupTotal.toFixed(2));
+        document.getElementById('total_counterpart').value = formatNumberWithCommas(counterpartTotal.toFixed(2));
+        document.getElementById('total_project_cost').value = formatNumberWithCommas((setupTotal + counterpartTotal).toFixed(2));
+
+        // Update hidden fields with full values
+        document.getElementById('eo').value = setupTotal;
+        document.getElementById('cpf').value = counterpartTotal;
+    }
+
+    // Update the form submission handler
+    document.querySelector('form').addEventListener('submit', function(e) {
+        e.preventDefault(); // Prevent default submission
+        
+        // Remove commas from all amount inputs before submission
+        document.querySelectorAll('.setup-amount, .counterpart-amount').forEach(input => {
+            // Remove commas but keep the decimal places
+            input.value = input.value.replace(/,/g, '');
+        });
+
+        // Now submit the form
+        this.submit();
+    });
+
+    // Initialize calculations when page loads
+    document.addEventListener('DOMContentLoaded', function() {
+        calculateTotals();
+    });
+</script>

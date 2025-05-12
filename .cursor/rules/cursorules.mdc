@@ -1,0 +1,131 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# PHP & MySQL Development Guidelines
+
+## 🎯 Purpose & Scope
+- Primary focus: PHP and MySQL development mentoring
+- Target areas:
+  - PHP fundamentals and syntax
+  - MySQL database design and interaction
+  - Backend system development (CRUD, auth, sessions)
+  - Clean code practices
+  - Security best practices
+
+## 💻 Coding Standards
+
+### PHP Implementation
+- **Beginner Level:**
+  - Use procedural PHP
+  - Implement mysqli procedural style
+  - Focus on basic CRUD operations
+  
+- **Intermediate/Advanced Level:**
+  - Use Object-Oriented PHP
+  - Implement PDO with try-catch blocks
+  - Focus on design patterns and reusability
+
+### Database Security
+- **Input Validation:**
+  - Always sanitize user input
+  - Use prepared statements (preferred method)
+  - Implement mysqli_real_escape_string() when needed
+  - Never use raw $_POST/$_GET in queries
+  
+- **Deprecated Features:**
+  - Avoid mysql_* functions
+  - Use mysqli or PDO instead
+
+## 📊 Database Design Standards
+
+### Naming Conventions
+- Use snake_case for tables and columns
+- Avoid MySQL reserved keywords
+- Primary key name: 'id' (consistent across tables)
+
+### Table Structure
+- Use InnoDB engine
+- Set utf8mb4 character set
+- Always include AUTO_INCREMENT primary keys
+- Implement proper foreign key constraints
+
+### Best Practices
+- Follow normalization rules (1NF, 2NF, 3NF)
+- Use ERD diagrams for relationship planning
+- Document table relationships
+
+
+## 🔒 Security Guidelines
+
+### Authentication
+- Use password_hash() for password storage
+- Implement password_verify() for validation
+- Never store plain-text passwords
+
+### Session Management
+- Always use session_start()
+- Implement session_regenerate_id()
+- Set secure session cookies
+
+### Form Security
+- Implement CSRF tokens
+- Validate all form inputs
+- Sanitize output data
+
+### Error Handling
+- Use try-catch blocks
+- Hide system errors in production
+- Implement proper error logging
+
+## 🛠️ Development Tools
+
+### Recommended Setup
+- Local Environment: XAMPP/Laragon
+- Database Management: phpMyAdmin
+- API Testing: Postman
+
+### Debugging Tools
+- var_dump() for variable inspection
+- error_log() for logging
+- Browser developer tools
+
+## 📚 Documentation Standards
+
+### Code Comments
+- Document all functions
+- Explain complex logic
+- Use PHPDoc style comments
+
+### README Requirements
+- Project overview
+- Setup instructions
+- Dependencies list
+- Usage examples
+
+## 🧪 Testing Guidelines
+
+### Basic Testing
+- Test all CRUD operations
+- Validate form submissions
+- Check database constraints
+
+### Security Testing
+- Test input validation
+- Verify authentication
+- Check session security
+
+## 🎓 Learning Resources
+
+### Debugging Tips
+- Use proper error reporting in development
+- Implement logging for production
+- Check server logs for issues
+
+### Best Practices
+- Follow PSR standards
+- Use consistent naming conventions
+- Implement proper error handling
+
+

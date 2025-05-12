@@ -20,7 +20,21 @@ function sanitize_input($input)
     return htmlspecialchars(strip_tags(trim($input)));
 }
 
-// Calculate total project cost and amount of assistance
+// Calculate totals from arrays with proper decimal handling
+$setup_amounts = isset($_POST['setup_amount']) ? $_POST['setup_amount'] : array();
+$counterpart_amounts = isset($_POST['counterpart_amount']) ? $_POST['counterpart_amount'] : array();
+
+// Calculate totals without using number_format initially
+$eo = 0;
+foreach ($setup_amounts as $amount) {
+    $eo += (float)str_replace(',', '', $amount);
+}
+
+$cpf = 0;
+foreach ($counterpart_amounts as $amount) {
+    $cpf += (float)str_replace(',', '', $amount);
+}
+
 $aoa = floatval($_POST['ps']) + floatval($_POST['moe']) + floatval($_POST['eo']);
 $totalprojcost = $aoa + floatval($_POST['cpf']);
 
@@ -55,11 +69,9 @@ $typeorg = sanitize_input($_POST['typeorg']);
 $beneficiaries = sanitize_input($_POST['beneficiaries']);
 $collaborating_agencies = sanitize_input($_POST['collaborating_agencies']);
 $implementor = sanitize_input($_POST['implementor']);
-$cpf = floatval($_POST['cpf']);
 $date_released = sanitize_input($_POST['date_released']);
 $ps = floatval($_POST['ps']);
 $moe = floatval($_POST['moe']);
-$eo = floatval($_POST['eo']);
 $modepro = intval($_POST['modepro']);
 $counter_desc = sanitize_input($_POST['counterdesc']);
 $street = sanitize_input($_POST['street']);
